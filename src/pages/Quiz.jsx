@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../context/AuthProvider';
 
-// --- Quiz Data ---
-const questions = [
+// --- Quiz Data (fallback) ---
+const DEFAULT_QUESTIONS = [
   {
     question: "What does 'encryption' mean in cybersecurity?",
     answers: [
@@ -51,12 +53,42 @@ const questions = [
 
 // --- Main App Component ---
 export default function App() {
+  const [questions, setQuestions] = useState(DEFAULT_QUESTIONS);
+  
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        const { data: quiz, error: quizErr } = await supabase.from('quizzes').select('id').eq('slug', 'encryption-quiz').limit(1).single();
+        if (quizErr || !quiz) {
+          console.warn('Could not load quiz id, using default questions', quizErr?.message);
+          return;
+        }
+        const { data: qData, error } = await supabase.from('questions').select('*').eq('quiz_id', quiz.id).order('id', { ascending: true });
+        if (error) {
+          console.error('Failed to load questions from DB:', error.message);
+          return;
+        }
+        if (qData && qData.length > 0) {
+          const mapped = qData.map(q => ({ question: q.question_text, answers: q.answers }));
+          setQuestions(mapped);
+        }
+      } catch (err) {
+        console.error('Error loading questions:', err);
+      }
+    };
+    loadQuestions();
+  }, []);
+
+  // --- Main App Component ---
+
+// --- Main App Component ---
   // --- State ---
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [showScore, setShowScore] = useState(false);
+  const { user } = useAuth();
 
   // --- Event Handlers ---
 
@@ -135,6 +167,30 @@ export default function App() {
   const answerIcons = ["🌱", "📘", "🧠", "👑"];
 
   // --- Render ---
+
+  // Save result to Supabase when quiz finishes
+  useEffect(() => {
+    if (!showScore) return;
+
+    const saveResult = async () => {
+      try {
+        const payload = {
+          user_id: user?.id ?? null,
+          user_email: user?.email ?? null,
+          quiz: 'encryption-quiz',
+          score: score,
+          max_score: questions.length,
+          metadata: { total_questions: questions.length }
+        };
+        const { error } = await supabase.from('results').insert([payload]);
+        if (error) console.error('Failed to save quiz result:', error.message);
+      } catch (err) {
+        console.error('Error saving quiz result:', err);
+      }
+    };
+
+    saveResult();
+  }, [showScore]);
   return (
     <div className="font-sans min-h-screen bg-gray-50 text-gray-900">
       

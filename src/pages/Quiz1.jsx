@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../context/AuthProvider';
 
 // ==========================================
 // GAME DATA AND CONFIGURATION
@@ -59,6 +61,7 @@ export default function PigpenCipherGame() {
   const timerRef = useRef(null);
   const [inputDisabled, setInputDisabled] = useState(true);
   const [feedback, setFeedback] = useState({ show: false, message: '', type: 'correct' });
+  const { user } = useAuth();
 
   // ==========================================
   // DERIVED STATE
@@ -195,6 +198,34 @@ export default function PigpenCipherGame() {
   // ==========================================
   // RENDER LOGIC
   // ==========================================
+
+  // Save result when the player reaches the gameover screen
+  useEffect(() => {
+    if (screen !== 'gameover') return;
+    const saveResult = async () => {
+      try {
+        const payload = {
+          user_id: user?.id ?? null,
+          user_email: user?.email ?? null,
+          quiz: 'pigpen-game',
+          score: score,
+          max_score: null,
+          metadata: {
+            rounds: currentRound,
+            correct: correctCount,
+            wrong: wrongCount,
+            best_streak: bestStreak,
+            difficulty
+          }
+        };
+        const { error } = await supabase.from('results').insert([payload]);
+        if (error) console.error('Failed to save pigpen result:', error.message);
+      } catch (err) {
+        console.error('Error saving pigpen result:', err);
+      }
+    };
+    saveResult();
+  }, [screen]);
   const renderKeyCell = (letter, pos, hasDot = false) => {
     const borderClasses = {
       1: 'border-r-0 border-b-0', 2: 'border-b-0', 3: 'border-l-0 border-b-0',

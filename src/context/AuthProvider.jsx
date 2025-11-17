@@ -26,6 +26,25 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
+  // Ensure a profiles row exists for authenticated users
+  useEffect(() => {
+    const ensureProfile = async (u) => {
+      if (!u) return;
+      try {
+        const payload = {
+          user_id: u.id,
+          email: u.email,
+          display_name: u.user_metadata?.full_name ?? u.user_metadata?.name ?? null,
+          avatar: u.user_metadata?.avatar_url ?? null,
+        };
+        await supabase.from('profiles').upsert(payload, { onConflict: 'user_id' });
+      } catch (err) {
+        console.error('Failed to ensure profile:', err?.message ?? err);
+      }
+    };
+    if (session?.user) ensureProfile(session.user);
+  }, [session]);
+
   const value = useMemo(() => {
     const user = session?.user ?? null;
     return {

@@ -6,6 +6,7 @@ import Games from "./pages/Games";
 import GetStarted from "./pages/GetStarted";
 import Profile from "./pages/Profile";
 import Quiz1 from "./pages/Quiz1"
+import Dashboard from "./pages/Dashboard";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/get-started" element={<GetStarted />} /> 
         <Route path="/profile" element={<Profile />} />
         <Route path="/quiz1" element={<Quiz1 />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

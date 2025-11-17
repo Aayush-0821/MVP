@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../assets/CSS/style.css";
 
 import logo from "../assets/logo.png";
@@ -13,231 +13,346 @@ import instagram from "../assets/instagram.png";
 import twitter from "../assets/twitter.png";
 import linkedin from "../assets/linkedin.png";
 
+import { useAuth } from "../context/AuthProvider";
+
 const MvpLandingPage = () => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+  const [activeDay, setActiveDay] = useState(2);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/');
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
+  };
+
+  const userInitial = () => {
+    const name = user?.user_metadata?.full_name || user?.email || '';
+    return name ? name.charAt(0).toUpperCase() : 'U';
+  };
+
   return (
-    <div className="container">
-      <nav className="pt-4 pl-5">
-        <Link to="/" className="navLeft">
-          <img src={logo} alt="Website Logo" className="logo" />
-          <h1 className="logo-text">MVP</h1>
-        </Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+      {/* Navigation */}
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+        scrolled ? 'bg-white/90 backdrop-blur-lg shadow-lg' : 'bg-white/70 backdrop-blur-sm'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                <img src={logo} alt="MVP Logo" className="w-6 h-6" />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                MVP
+              </h1>
+            </Link>
 
-        <div className="navRight">
-          <Link to="/quiz">
-            <button className="glitchBtn" data-text="Quiz">
-              Quiz
+            <div className="hidden md:flex items-center gap-4">
+              <Link to="/quiz">
+                <button className="px-6 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors">
+                  Quiz
+                </button>
+              </Link>
+
+              {!user ? (
+                <Link to="/login">
+                  <button className="px-6 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors">
+                    Login
+                  </button>
+                </Link>
+              ) : (
+                <button 
+                  onClick={handleLogout}
+                  className="px-6 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors"
+                >
+                  Logout
+                </button>
+              )}
+
+              <Link to="/games">
+                <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all font-medium">
+                  Games
+                </button>
+              </Link>
+
+              <Link to="/dashboard" title="Your Profile">
+                <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold hover:shadow-lg transition-shadow cursor-pointer">
+                  {user ? userInitial() : 'U'}
+                </div>
+              </Link>
+
+              <div className="theme-toggle cursor-pointer" id="theme-toggle" title="Toggle Theme">
+                <img src={moon} alt="Toggle Theme" className="w-10 h-10 rounded-lg hover:bg-gray-200 p-2 transition-colors" id="theme-icon" />
+              </div>
+            </div>
+
+            {/* Mobile menu button */}
+            <button className="md:hidden p-2 text-gray-700">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
-          </Link>
-
-          <Link to="/login">
-            <button className="glitchBtn" data-text="Login">
-              Login
-            </button>
-          </Link>
-
-          <Link to="/games">
-            <button className="glitchBtn" data-text="Games">
-              Games
-            </button>
-          </Link>
-
-          <Link to="/profile" className="profile-icon" title="Your Profile">
-            <img src={profileIcon} alt="Profile Icon" />
-          </Link>
-
-          <div className="theme-toggle" id="theme-toggle" title="Toggle Theme">
-            <img src={moon} alt="Toggle Theme Icon" id="theme-icon" />
           </div>
         </div>
       </nav>
 
-      <section className="hero">
-        <img src={learnByDoing} className="learnByDoing" alt="Learn by Doing" />
-      </section>
-
-      <div className="description">
-        <p className="descText">
-          Master encryption through interactive challenges. Learn, play, and
-          sharpen your cyber skills in just minutes a day.
-        </p>
-        <div className="get-started-btn">
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-6 relative">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-block mb-6 px-4 py-2 bg-purple-100 rounded-full text-purple-700 font-medium text-sm animate-pulse">
+            🚀 Join 10,000+ learners worldwide
+          </div>
+          
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Learn by Doing
+            </span>
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            Master encryption through interactive challenges. Learn, play, and sharpen your cyber skills in just minutes a day.
+          </p>
+          
           <Link to="/get-started">
-            <button>Get Started</button>
+            <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              Get Started Free →
+            </button>
           </Link>
-        </div>
-      </div>
 
-      <section className="joinOver">
-        <div className="bubbles">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <span key={i}></span>
-          ))}
-        </div>
-
-        <h2 className="joinText">Join over 10,000 learners worldwide</h2>
-
-        <div className="underJoinText">
-          <div className="stars">
-            ★★★★★ <span>Over 1,000 5-star reviews</span>
-          </div>
-
-          <div className="mentions">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <span className="text-yellow-500">★★★★★</span>
+              <span>1,000+ reviews</span>
+            </div>
+            <div className="w-px h-4 bg-gray-300"></div>
             <div>Featured in TechCrunch</div>
-            {/* SVGs kept as-is */}
-          </div>
-
-          <div className="awards">
-            <div>Editors Choice</div>
-            <div>No. 1 Learning Platform</div>
+            <div className="w-px h-4 bg-gray-300"></div>
+            <div>Editor's Choice</div>
           </div>
         </div>
       </section>
 
-      <section className="conceptsSection">
-        <div className="conceptsLeft">
-          <svg className="polarGraph" viewBox="0 0 500 500">
-            <g stroke="#e5e5e5" strokeWidth="1" fill="none">
-              {[50, 100, 150, 200].map((r, i) => (
-                <circle key={i} cx="250" cy="250" r={r} />
-              ))}
-            </g>
-          </svg>
-        </div>
-        <div className="conceptsRight">
-          <h2 className="conceptsTitle">
-            Concepts<br />that click
-          </h2>
-          <p className="conceptsDescription">
-            Interactive lessons make even complex ideas easy to grasp. Instant,
-            custom feedback accelerates your understanding.
-          </p>
+      {/* Concepts Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+            <div className="relative w-full aspect-square bg-gradient-to-br from-purple-100 to-blue-100 rounded-3xl p-12 flex items-center justify-center">
+              <svg className="w-full h-full" viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style={{stopColor: '#9333ea', stopOpacity: 0.8}} />
+                    <stop offset="100%" style={{stopColor: '#2563eb', stopOpacity: 0.8}} />
+                  </linearGradient>
+                </defs>
+                {[30, 60, 90].map((r, i) => (
+                  <circle 
+                    key={i} 
+                    cx="100" 
+                    cy="100" 
+                    r={r} 
+                    fill="none" 
+                    stroke="url(#grad1)" 
+                    strokeWidth="2" 
+                    opacity={1 - i * 0.3}
+                  />
+                ))}
+                {[0, 60, 120, 180, 240, 300].map((angle, i) => (
+                  <line 
+                    key={i} 
+                    x1="100" 
+                    y1="100" 
+                    x2={100 + 90 * Math.cos((angle * Math.PI) / 180)} 
+                    y2={100 + 90 * Math.sin((angle * Math.PI) / 180)} 
+                    stroke="url(#grad1)" 
+                    strokeWidth="1" 
+                    opacity="0.5" 
+                  />
+                ))}
+              </svg>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-5xl font-bold mb-6 leading-tight">
+              Concepts<br />that <span className="text-purple-600">click</span>
+            </h2>
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Interactive lessons make even complex ideas easy to grasp. Instant, custom feedback accelerates your understanding.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="learnSection">
-        <div className="learnLeft">
-          <h2 className="learnTitle">
-            Learn at<br />your level
-          </h2>
-          <p className="learnDesc">
-            Brush up on the basics or learn new skills. Designed for learners
-            ages 13 to 113.
-          </p>
-        </div>
-        <div className="learnRight">
-          <div className="learnCard highlighted">
-            <div className="cardTag animate-pulse">FOR YOU</div>
-            <img src={encryptionLearning1} alt="Encryption Fundamentals" />
-            <p>Encryption Fundamentals</p>
+      {/* Learn Section */}
+      <section className="py-20 px-6 bg-white/50 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-5xl font-bold mb-6 leading-tight">
+              Learn at<br />your <span className="text-blue-600">level</span>
+            </h2>
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Brush up on the basics or learn new skills. Designed for learners ages 13 to 113.
+            </p>
           </div>
-          <div className="learnCard">
-            <img src={encryptionLearning2} alt="Gamified Learning" />
-            <p>Gamified Learning</p>
-          </div>
-        </div>
-      </section>
 
-      <section className="stayMotivatedSection">
-        <div className="leftContent">
-          <div className="streakDisplay">
-            {["monday", "tuesday", "wednesday", "thursday"].map((day) => (
-              <div className="dayStreak" key={day} data-day={day}>
-                <div className="streakCircle incomplete">⚡</div>
-                <div className="dayLabel">{day[0].toUpperCase()}</div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-6 text-white transform hover:scale-105 hover:rotate-1 transition-all cursor-pointer relative overflow-hidden shadow-xl">
+              <div className="absolute top-4 right-4 bg-yellow-400 text-purple-900 text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+                FOR YOU
               </div>
-            ))}
-          </div>
+              <img src={encryptionLearning1} alt="Encryption Fundamentals" className="w-16 h-16 mt-4 mb-4 rounded-lg" />
+              <p className="font-semibold">Encryption Fundamentals</p>
+              <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-tl-full"></div>
+            </div>
 
-          <div className="goalMessage">
-            <div className="goalIcon">🏆</div>
-            <div className="goalText">
-              Reach your daily <strong className="highlightedGoal">GOAL!</strong>
+            <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl p-6 transform hover:scale-105 hover:-rotate-1 transition-all cursor-pointer shadow-lg">
+              <img src={encryptionLearning2} alt="Gamified Learning" className="w-16 h-16 mb-4 rounded-lg" />
+              <p className="font-semibold text-gray-800">Gamified Learning</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="motivatedContent">
-          <h2 className="motivatedTitle">
-            Stay<br />motivated
-          </h2>
-          <p className="motivatedDesc">
-            Finish every day smarter with engaging lessons, competitive
-            features, and daily encouragement.
-          </p>
+      {/* Stay Motivated Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-3xl p-8 shadow-xl">
+            <div className="flex justify-between mb-8">
+              {["M", "T", "W", "T", "F"].map((day, i) => (
+                <div 
+                  key={i} 
+                  className="flex flex-col items-center gap-2 cursor-pointer"
+                  onClick={() => setActiveDay(i)}
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${
+                    i <= activeDay 
+                      ? 'bg-gradient-to-br from-orange-400 to-yellow-400 scale-110 shadow-lg' 
+                      : 'bg-gray-200 hover:bg-gray-300'
+                  }`}>
+                    ⚡
+                  </div>
+                  <span className="text-xs font-medium text-gray-600">{day}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-white rounded-xl p-6 flex items-center gap-4 shadow-md">
+              <div className="text-4xl animate-bounce">🏆</div>
+              <div>
+                <p className="text-gray-600">Reach your daily</p>
+                <p className="text-2xl font-bold text-orange-500">GOAL!</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-5xl font-bold mb-6 leading-tight">
+              Stay<br /><span className="text-orange-500">motivated</span>
+            </h2>
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Finish every day smarter with engaging lessons, competitive features, and daily encouragement.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="effectiveSection">
-        <div className="effectiveLeft">
-          <div className="encryptionDemo"></div>
-        </div>
-        <div className="effectiveRight">
-          <h2 className="effectiveTitle">More effective.</h2>
-          <h2 className="effectiveSubtitle">More fun.</h2>
-          <p className="effectiveDesc">
+      {/* Effective Section */}
+      <section className="py-20 px-6 bg-gradient-to-br from-purple-100 via-blue-100 to-purple-100">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="mb-8">
+            <div className="inline-block bg-white rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-shadow">
+              <div className="text-6xl mb-4 animate-pulse">🔒</div>
+              <div className="flex gap-2 items-center justify-center">
+                <div className="w-3 h-3 bg-purple-600 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                <div className="w-3 h-3 bg-purple-600 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+              </div>
+            </div>
+          </div>
+          
+          <h2 className="text-5xl font-bold mb-4">
+            <span className="text-purple-600">More effective.</span><br />
+            <span className="text-blue-600">More fun.</span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             MVP's interactive approach teaches you to think, not memorize.
           </p>
         </div>
       </section>
 
-      <footer className="footer">
-        <div className="footer-top">
-          <div className="footer-logo-container">
-            <img src={logo} alt="Website Logo" className="logo" />
-            <h1 className="footer-logo-text">MVP</h1>
-          </div>
-
-          <div className="footer-links-group">
-            <div className="footer-links-col">
-              <div className="footer-links-title">Product</div>
-              <a href="#" className="footer-link">Courses</a>
-              <a href="#" className="footer-link">Pricing</a>
-              <a href="#" className="footer-link">Gift MVP</a>
-              <a href="#" className="footer-link">Help</a>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
+                  <img src={logo} alt="MVP Logo" className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold">MVP</h3>
+              </div>
+              <p className="text-gray-400 text-sm">Master encryption through interactive challenges.</p>
             </div>
 
-            <div className="footer-links-col">
-              <div className="footer-links-title">Company</div>
-              <a href="#" className="footer-link">About us</a>
-              <a href="#" className="footer-link">Careers</a>
-              <a href="#" className="footer-link">Educators</a>
+            <div>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <div className="space-y-2">
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Courses</a>
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Pricing</a>
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Gift MVP</a>
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Help</a>
+              </div>
             </div>
 
-            <div className="footer-links-col">
-              <div className="footer-links-title">Behind the scenes</div>
-              <a href="#" className="footer-link">AI at MVP</a>
-              <a href="#" className="footer-link">AI Evals for Learning Games</a>
-              <a href="#" className="footer-link">Solving Equations</a>
-              <a href="#" className="footer-link">Thinking in Code</a>
-              <a href="#" className="footer-link">Visual Algebra</a>
-              <a href="#" className="footer-link">Decomposition and Abstraction</a>
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <div className="space-y-2">
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">About us</a>
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Careers</a>
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Educators</a>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Connect</h4>
+              <div className="flex gap-3">
+                <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-purple-600 rounded-lg flex items-center justify-center transition-all hover:scale-110">
+                  <img src={facebook} alt="Facebook" className="w-5 h-5" />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-purple-600 rounded-lg flex items-center justify-center transition-all hover:scale-110">
+                  <img src={instagram} alt="Instagram" className="w-5 h-5" />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-purple-600 rounded-lg flex items-center justify-center transition-all hover:scale-110">
+                  <img src={twitter} alt="Twitter" className="w-5 h-5" />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-purple-600 rounded-lg flex items-center justify-center transition-all hover:scale-110">
+                  <img src={linkedin} alt="LinkedIn" className="w-5 h-5" />
+                </a>
+              </div>
             </div>
           </div>
 
-          <div className="footer-socials">
-            <a href="#" className="social-icon">
-              <img src={facebook} alt="Facebook" />
-            </a>
-            <a href="#" className="social-icon">
-              <img src={instagram} alt="Instagram" />
-            </a>
-            <a href="#" className="social-icon">
-              <img src={twitter} alt="Twitter" />
-            </a>
-            <a href="#" className="social-icon">
-              <img src={linkedin} alt="LinkedIn" />
-            </a>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <div className="footer-legal">
-            <a href="#" className="footer-legal-link">Terms of service</a>
-            <a href="#" className="footer-legal-link">Privacy policy</a>
-            <a href="#" className="footer-legal-link">California privacy policy</a>
-          </div>
-          <div className="footer-copyright">
-            © 2025 MVP Worldwide, Inc., MVP and the MVP Logo are trademarks of MVP Worldwide, Inc.
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+            <div className="flex flex-wrap gap-6">
+              <a href="#" className="hover:text-white transition-colors">Terms of service</a>
+              <a href="#" className="hover:text-white transition-colors">Privacy policy</a>
+              <a href="#" className="hover:text-white transition-colors">California privacy</a>
+            </div>
+            <div>© 2025 MVP Worldwide, Inc.</div>
           </div>
         </div>
       </footer>
