@@ -45,69 +45,76 @@ const MvpLandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
-      {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        scrolled ? 'bg-white/90 backdrop-blur-lg shadow-lg' : 'bg-white/70 backdrop-blur-sm'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
-                <img src={logo} alt="MVP Logo" className="w-6 h-6" />
-              </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                MVP
-              </h1>
-            </Link>
+<nav
+  className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+    scrolled
+      ? "bg-white/90 backdrop-blur-lg shadow-lg"
+      : "bg-white/70 backdrop-blur-sm"
+  }`}
+>
+  <div className="max-w-7xl mx-auto px-6 lg:px-10 py-4">
 
-            <div className="hidden md:flex items-center gap-4">
-              <Link to="/quiz">
-                <button className="px-6 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors">
-                  Quiz
-                </button>
-              </Link>
+    {/* FLEX CONTAINER */}
+    <div className="flex items-center justify-between w-full">
 
-              {!user ? (
-                <Link to="/login">
-                  <button className="px-6 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors">
-                    Login
-                  </button>
-                </Link>
-              ) : (
-                <button 
-                  onClick={handleLogout}
-                  className="px-6 py-2 text-gray-700 hover:text-purple-600 font-medium transition-colors"
-                >
-                  Logout
-                </button>
-              )}
-
-              <Link to="/games">
-                <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all font-medium">
-                  Games
-                </button>
-              </Link>
-
-              <Link to="/dashboard" title="Your Profile">
-                <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold hover:shadow-lg transition-shadow cursor-pointer">
-                  {user ? userInitial() : 'U'}
-                </div>
-              </Link>
-
-              <div className="theme-toggle cursor-pointer" id="theme-toggle" title="Toggle Theme">
-                <img src={moon} alt="Toggle Theme" className="w-10 h-10 rounded-lg hover:bg-gray-200 p-2 transition-colors" id="theme-icon" />
-              </div>
-            </div>
-
-            {/* Mobile menu button */}
-            <button className="md:hidden p-2 text-gray-700">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+      {/* LEFT — LOGO ONLY */}
+      <div className="flex items-center flex-shrink-0">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+            <img src={logo} alt="MVP Logo" className="w-6 h-6" />
           </div>
-        </div>
-      </nav>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            MVP
+          </h1>
+        </Link>
+      </div>
+
+      {/* RIGHT — ALL MENU ITEMS */}
+      <div className="flex items-center gap-8">
+
+        <Link to="/quiz">
+          <button className="px-4 py-2 text-gray-700 hover:text-purple-600 font-medium">
+            Quiz
+          </button>
+        </Link>
+
+        {!user ? (
+          <Link to="/login">
+            <button className="px-4 py-2 text-gray-700 hover:text-purple-600 font-medium">
+              Login
+            </button>
+          </Link>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 text-gray-700 hover:text-purple-600 font-medium"
+          >
+            Logout
+          </button>
+        )}
+
+        <Link to="/games">
+          <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:scale-105 transition">
+            Games
+          </button>
+        </Link>
+
+        <Link to="/dashboard">
+          <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold cursor-pointer hover:shadow-lg">
+            {user ? userInitial() : "U"}
+          </div>
+        </Link>
+
+        <img
+          src={moon}
+          className="w-9 h-9 p-2 rounded-lg hover:bg-gray-200 cursor-pointer"
+          id="theme-toggle"
+        />
+      </div>
+
+    </div>
+  </div>
+</nav>
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative">
