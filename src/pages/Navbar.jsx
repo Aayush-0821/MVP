@@ -8,9 +8,9 @@ import { useTheme } from "../context/ThemeContext";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme(); 
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  
+
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleLogout = async () => {
@@ -39,10 +39,9 @@ const Navbar = () => {
       <div className="hidden md:flex gap-10 text-gray-700 dark:text-gray-200 font-medium">
         <Link to="/quiz" className="hover:text-purple-600 dark:hover:text-purple-400 transition">Quiz</Link>
         <Link to="/games" className="hover:text-purple-600 dark:hover:text-purple-400 transition">Games</Link>
-        {!user ? (
+        <Link to="/about" className="hover:text-purple-600 dark:hover:text-purple-400 transition">About</Link>
+        {!user && (
           <Link to="/login" className="hover:text-purple-600 dark:hover:text-purple-400 transition">Login</Link>
-        ) : (
-          <button onClick={handleLogout} className="hover:text-red-600 dark:hover:text-red-400 transition">Logout</button>
         )}
       </div>
 
@@ -50,9 +49,10 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         {/* Dark Mode Toggle */}
         <img
-          src={moon}
+          src={theme === "dark" ? sun : moon}
           onClick={toggleTheme}
           className="w-9 h-9 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition"
+          alt="Toggle theme"
         />
 
         {/* Profile Avatar */}
@@ -68,7 +68,7 @@ const Navbar = () => {
             {showProfileMenu && (
               <div className="absolute right-0 mt-3 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-xl p-3 text-sm animate-fadeIn">
                 <Link to="/dashboard" className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">Dashboard</Link>
-                <Link to="/settings" className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">Settings</Link>
+                {/* <Link to="/settings" className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">Settings</Link> */}
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left p-2 hover:bg-red-500 hover:text-white rounded"

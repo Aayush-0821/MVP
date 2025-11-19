@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../assets/CSS/style.css";
 import Navbar from "./Navbar";
 import learnByDoing from "../assets/learn-by-doing.png";
 import facebook from "../assets/facebook.png";
@@ -12,15 +11,15 @@ import encryptionLearning2 from "../assets/encryptionLearning2.png";
 import { useAuth } from "../context/AuthProvider";
 import ChatBot from "./ChatBot.jsx";
 
-const MvpLandingPage = ({ theme, toggleTheme }) => {
+const MvpLandingPage = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [activeDay, setActiveDay] = useState(2);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all">
-      
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
+
+      <Navbar />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative">
@@ -152,11 +151,10 @@ const MvpLandingPage = ({ theme, toggleTheme }) => {
                   onClick={() => setActiveDay(i)}
                 >
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${
-                      i <= activeDay
-                        ? "bg-linear-to-br from-orange-400 to-yellow-400 scale-110 shadow-lg"
-                        : "bg-gray-200 hover:bg-gray-300"
-                    }`}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${i <= activeDay
+                      ? "bg-linear-to-br from-orange-400 to-yellow-400 scale-110 shadow-lg"
+                      : "bg-gray-200 hover:bg-gray-300"
+                      }`}
                   >
                     ⚡
                   </div>
