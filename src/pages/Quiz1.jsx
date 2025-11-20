@@ -1,486 +1,306 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import { useAuth } from '../context/AuthProvider';
+import React, { useState, useEffect } from 'react';
 
-// ==========================================
-// GAME DATA AND CONFIGURATION
-// ==========================================
-const PIGPEN_MAP = {
-  'A': '⌈', 'B': '⊓', 'C': '⌉',
-  'D': '⊏', 'E': '□', 'F': '⊐',
-  'G': '⌊', 'H': '⊔', 'I': '⌋',
-  'J': '⌈•', 'K': '⊓•', 'L': '⌉•',
-  'M': '⊏•', 'N': '□•', 'O': '⊐•',
-  'P': '⌊•', 'Q': '⊔•', 'R': '⌋•',
-  'S': '◁', 'T': '▷', 'U': '△', 'V': '▽',
-  'W': '◁•', 'X': '▷•', 'Y': '△•', 'Z': '▽•'
-};
-const DIFFICULTY_CONFIG = {
-  easy: { letters: 3, timeLimit: 45, basePoints: 50 },
-  medium: { letters: 5, timeLimit: 35, basePoints: 100 },
-  hard: { letters: 8, timeLimit: 25, basePoints: 200 }
-};
-const WORD_LISTS = {
-  easy: ['CAT', 'DOG', 'BAT', 'HAT', 'SUN', 'MAP', 'PEN', 'BOX', 'KEY', 'BUS', 'CUP', 'BAG'],
-  medium: ['APPLE', 'BRAIN', 'CLOUD', 'DREAM', 'FLAME', 'GRAPE', 'HORSE', 'LEMON', 'OCEAN', 'PIANO'],
-  hard: ['ELEPHANT', 'MOUNTAIN', 'TREASURE', 'BUTTERFLY', 'UNIVERSE', 'KEYBOARD', 'PINEAPPLE']
-};
-const MAX_ROUNDS = 10;
+const QUESTIONS = [
+  {
+    id: 1,
+    question: "Which protocol is used to securely transmit data over the internet?",
+    options: ["HTTP", "FTP", "HTTPS", "SMTP"],
+    correct: 2,
+    explanation: "HTTPS (Hypertext Transfer Protocol Secure) uses encryption (TLS/SSL) to secure communications."
+  },
+  {
+    id: 2,
+    question: "What is a common method used by attackers to trick users into revealing sensitive information?",
+    options: ["Phishing", "Firewalling", "Encryption", "Hashing"],
+    correct: 0,
+    explanation: "Phishing involves sending fraudulent communications that appear to come from a reputable source."
+  },
+  {
+    id: 3,
+    question: "Which of the following is a strong password practice?",
+    options: ["Using 'password123'", "Using the same password everywhere", "Using a mix of chars, numbers & symbols", "Writing it on a sticky note"],
+    correct: 2,
+    explanation: "Strong passwords should be complex and unique to prevent brute-force attacks."
+  },
+  {
+    id: 4,
+    question: "What does 2FA stand for?",
+    options: ["Two-Factor Authentication", "To For All", "Two-Fast Access", "Total File Access"],
+    correct: 0,
+    explanation: "2FA adds an extra layer of security by requiring two distinct forms of identification."
+  },
+  {
+    id: 5,
+    question: "What software is designed to block unauthorized access to a computer network?",
+    options: ["Antivirus", "Firewall", "Spyware", "Malware"],
+    correct: 1,
+    explanation: "A firewall monitors and controls incoming and outgoing network traffic based on security rules."
+  }
+];
 
-// ==========================================
-// HELPER FUNCTIONS
-// ==========================================
-function textToPigpen(text) {
-  return text.toUpperCase().split('').map(char => PIGPEN_MAP[char] || char).join(' ');
-}
-function getRandomWord(difficulty) {
-  const words = WORD_LISTS[difficulty];
-  return words[Math.floor(Math.random() * words.length)];
-}
+// Icons
+const ShieldIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+);
+const LockIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+);
+const AlertTriangleIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+);
+const TerminalIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" /></svg>
+);
+const PlayIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3" /></svg>
+);
+const CheckCircleIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+);
+const XCircleIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" /></svg>
+);
+const RefreshCwIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M23 4v6h-6" /><path d="M1 20v-6h6" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" /></svg>
+);
 
-// ==========================================
-// MAIN REACT COMPONENT
-// ==========================================
-export default function PigpenCipherGame() {
-  // ==========================================
-  // REACT STATE
-  // ==========================================
-  const [screen, setScreen] = useState('difficulty');
-  const [lastScreen, setLastScreen] = useState('difficulty');
-  const [difficulty, setDifficulty] = useState('easy');
-  const [currentRound, setCurrentRound] = useState(0);
+export default function Quiz1() {
+  const [gameState, setGameState] = useState('start'); // start, playing, won, lost
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
+  const [health, setHealth] = useState(100);
   const [streak, setStreak] = useState(0);
-  const [bestStreak, setBestStreak] = useState(0);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [wrongCount, setWrongCount] = useState(0);
-  const [currentAnswer, setCurrentAnswer] = useState('');
-  const [cipherSymbols, setCipherSymbols] = useState('Click Start!');
-  const [userInput, setUserInput] = useState('');
-  const [timeLeft, setTimeLeft] = useState(DIFFICULTY_CONFIG.easy.timeLimit);
-  const timerRef = useRef(null);
-  const [inputDisabled, setInputDisabled] = useState(true);
-  const [feedback, setFeedback] = useState({ show: false, message: '', type: 'correct' });
-  const { user } = useAuth();
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [feedback, setFeedback] = useState(null); // 'correct' or 'incorrect'
 
-  // ==========================================
-  // DERIVED STATE
-  // ==========================================
-  const accuracy = currentRound === 0 ? 0 : Math.round((correctCount / currentRound) * 100);
+  const startGame = () => {
+    setGameState('playing');
+    setCurrentQuestion(0);
+    setScore(0);
+    setHealth(100);
+    setStreak(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setFeedback(null);
+  };
 
-  // ==========================================
-  // GAME FLOW FUNCTIONS
-  // ==========================================
-  const loadNextQuestion = useCallback(() => {
-    if (currentRound >= MAX_ROUNDS) {
-      endGame();
+  const handleAnswer = (index) => {
+    if (isAnswered) return;
+
+    setSelectedOption(index);
+    setIsAnswered(true);
+
+    const correct = QUESTIONS[currentQuestion].correct === index;
+
+    if (correct) {
+      setFeedback('correct');
+      const points = 100 + (streak * 20);
+      setScore(s => s + points);
+      setStreak(s => s + 1);
+    } else {
+      setFeedback('incorrect');
+      setHealth(h => Math.max(0, h - 25));
+      setStreak(0);
+    }
+  };
+
+  const nextQuestion = () => {
+    if (health <= 0) {
+      setGameState('lost');
       return;
     }
-    setCurrentRound(prev => prev + 1);
-    const newWord = getRandomWord(difficulty);
-    setCurrentAnswer(newWord);
-    setCipherSymbols(textToPigpen(newWord));
-    setUserInput('');
-    setInputDisabled(false);
-    setTimeLeft(DIFFICULTY_CONFIG[difficulty].timeLimit);
-  }, [currentRound, difficulty]);
 
-  const handleWrongAnswer = useCallback((message) => {
-    setScore(prev => Math.max(0, prev - 25));
-    setStreak(0);
-    setWrongCount(prev => prev + 1);
-    setFeedback({ show: true, message, type: 'wrong' });
-    setInputDisabled(true);
-    setUserInput('');
-    setTimeout(() => {
-      setFeedback({ show: false, message: '', type: 'wrong' });
-      loadNextQuestion();
-    }, 3000);
-  }, [loadNextQuestion]); // Add loadNextQuestion as dependency
-
-  const startGame = (diff) => {
-    setDifficulty(diff);
-    setCurrentRound(0);
-    setScore(0);
-    setStreak(0);
-    setBestStreak(0);
-    setCorrectCount(0);
-    setWrongCount(0);
-    setScreen('game');
-    setTimeout(() => loadNextQuestion(), 100);
-  };
-
-  const handleCorrectAnswer = () => {
-    const config = DIFFICULTY_CONFIG[difficulty];
-    const basePoints = config.basePoints;
-    const timeBonus = timeLeft * 2;
-    const streakBonus = streak * 10;
-    const totalPoints = basePoints + timeBonus + streakBonus;
-    setScore(prev => prev + totalPoints);
-    const newStreak = streak + 1;
-    setStreak(newStreak);
-    setCorrectCount(prev => prev + 1);
-    if (newStreak > bestStreak) setBestStreak(newStreak);
-    setFeedback({ show: true, message: `✓ Correct! +${totalPoints} points`, type: 'correct' });
-    setInputDisabled(true);
-    setUserInput('');
-    setTimeout(() => {
-      setFeedback({ show: false, message: '', type: 'correct' });
-      loadNextQuestion();
-    }, 2000);
-  };
-
-  const submitAnswer = () => {
-    setTimeLeft(0); // Stop timer
-    const userAnswer = userInput.trim().toUpperCase();
-    if (userAnswer === currentAnswer) {
-      handleCorrectAnswer();
+    if (currentQuestion + 1 >= QUESTIONS.length) {
+      setGameState('won');
     } else {
-      handleWrongAnswer(`Wrong! The correct answer was: ${currentAnswer}`);
+      setCurrentQuestion(c => c + 1);
+      setSelectedOption(null);
+      setIsAnswered(false);
+      setFeedback(null);
     }
   };
-
-  const skipQuestion = () => {
-    setTimeLeft(0); // Stop timer
-    setScore(prev => Math.max(0, prev - 10));
-    setStreak(0);
-    setWrongCount(prev => prev + 1);
-    setFeedback({ show: true, message: `Skipped! The answer was: ${currentAnswer} (-10 pts)`, type: 'wrong' });
-    setInputDisabled(true);
-    setUserInput('');
-    setTimeout(() => {
-      setFeedback({ show: false, message: '', type: 'wrong' });
-      loadNextQuestion();
-    }, 2500);
-  };
-
-  const endGame = () => {
-    setTimeLeft(0);
-    setScreen('gameover');
-  };
-
-  const restartGame = () => setScreen('difficulty');
-
-  const toggleKey = () => {
-    if (screen === 'key') {
-      setScreen(lastScreen);
-    } else {
-      setLastScreen(screen);
-      setScreen('key');
-    }
-  };
-
-  // ==========================================
-  // TIMER LOGIC
-  // ==========================================
-  const timeIsUp = useCallback(() => {
-    handleWrongAnswer(`Time's up! The answer was: ${currentAnswer}`);
-  }, [currentAnswer, handleWrongAnswer]);
 
   useEffect(() => {
-    if (timeLeft > 0 && screen === 'game' && !inputDisabled) {
-      timerRef.current = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    } else if (timeLeft === 0 && screen === 'game' && !inputDisabled) {
-      timeIsUp();
+    if (health <= 0 && isAnswered) {
+      const timer = setTimeout(() => setGameState('lost'), 1500);
+      return () => clearTimeout(timer);
     }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [timeLeft, screen, inputDisabled, timeIsUp]);
+  }, [health, isAnswered]);
 
-  // ==========================================
-  // EVENT LISTENERS
-  // ==========================================
-  const handleInputKeydown = (e) => {
-    if (e.key === 'Enter' && !inputDisabled) submitAnswer();
-  }
-
-  // ==========================================
-  // RENDER LOGIC
-  // ==========================================
-
-  // Save result when the player reaches the gameover screen
-  useEffect(() => {
-    if (screen !== 'gameover') return;
-    const saveResult = async () => {
-      try {
-        const payload = {
-          user_id: user?.id ?? null,
-          user_email: user?.email ?? null,
-          quiz: 'pigpen-game',
-          score: score,
-          max_score: null,
-          metadata: {
-            rounds: currentRound,
-            correct: correctCount,
-            wrong: wrongCount,
-            best_streak: bestStreak,
-            difficulty
-          }
-        };
-        const { error } = await supabase.from('results').insert([payload]);
-        if (error) console.error('Failed to save pigpen result:', error.message);
-      } catch (err) {
-        console.error('Error saving pigpen result:', err);
-      }
-    };
-    saveResult();
-  }, [screen]);
-  const renderKeyCell = (letter, pos, hasDot = false) => {
-    const borderClasses = {
-      1: 'border-r-0 border-b-0', 2: 'border-b-0', 3: 'border-l-0 border-b-0',
-      4: 'border-r-0', 5: 'border-none', 6: 'border-l-0',
-      7: 'border-r-0 border-t-0', 8: 'border-t-0', 9: 'border-l-0 border-t-0',
-    };
-    return (
-      <div className={`w-20 h-20 sm:w-24 sm:h-24 border-4 border-gray-800 flex items-center justify-center text-xl sm:text-2xl font-bold bg-white text-gray-800 relative ${borderClasses[pos]}`}>
-        {letter}
-        {hasDot && <span className="absolute text-5xl text-purple-600" style={{ transform: 'translate(0, -3px)' }}>•</span>}
-      </div>
-    );
-  };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 min-h-screen p-5 font-sans text-white">
-      <div className="max-w-3xl mx-auto">
-        
-        {/* HEADER */}
-        <div className="text-center text-white mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">🔐 PinPoint Cipher Game</h1>
-          <p>Decode the symbols and learn the ancient Pigpen cipher!</p>
-        </div>
+    <div className="min-h-screen bg-slate-950 text-cyan-50 font-mono p-4 md:p-8 flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Background Grid Effect */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none"></div>
 
-        {/* ================================ */}
-        {/* SCREEN 1: CHOOSE DIFFICULTY      */}
-        {/* ================================ */}
-        {screen === 'difficulty' && (
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
-            <h2 className="text-2xl font-bold mb-8 text-white">Choose Your Difficulty Level</h2>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                className="w-full sm:w-auto bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white py-5 px-8 rounded-lg text-lg font-bold cursor-pointer transition-all duration-300 shadow-md hover:bg-white/40 hover:scale-105 hover:shadow-lg" 
-                onClick={() => startGame('easy')}
-              >
-                <div>EASY</div>
-                <small>3 letters • 45 seconds</small>
-              </button>
-              <button 
-                className="w-full sm:w-auto bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white py-5 px-8 rounded-lg text-lg font-bold cursor-pointer transition-all duration-300 shadow-md hover:bg-white/40 hover:scale-105 hover:shadow-lg" 
-                onClick={() => startGame('medium')}
-              >
-                <div>MEDIUM</div>
-                <small>5 letters • 35 seconds</small>
-              </button>
-              <button 
-                className="w-full sm:w-auto bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white py-5 px-8 rounded-lg text-lg font-bold cursor-pointer transition-all duration-300 shadow-md hover:bg-white/40 hover:scale-105 hover:shadow-lg" 
-                onClick={() => startGame('hard')}
-              >
-                <div>HARD</div>
-                <small>8 letters • 25 seconds</small>
-              </button>
+      {/* Header */}
+      <div className="z-10 w-full max-w-4xl mb-8 flex justify-between items-center border-b border-cyan-900/50 pb-4">
+        <div className="flex items-center gap-3">
+          <ShieldIcon className="w-8 h-8 text-cyan-400" />
+          <h1 className="text-2xl md:text-3xl font-bold tracking-wider text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+            CYBER DEFENSE <span className="text-slate-500">PROTOCOL</span>
+          </h1>
+        </div>
+        <div className="flex items-center gap-6 text-sm md:text-base">
+          <div className="flex flex-col items-end">
+            <span className="text-slate-400 text-xs uppercase tracking-widest">System Integrity</span>
+            <div className="w-32 h-2 bg-slate-800 rounded-full mt-1 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 ${health > 50 ? 'bg-emerald-500' : health > 25 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                style={{ width: `${health}%` }}
+              />
             </div>
+          </div>
+          <div className="text-right">
+            <div className="text-slate-400 text-xs uppercase tracking-widest">Score</div>
+            <div className="text-xl font-bold text-cyan-400">{score}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="z-10 w-full max-w-3xl">
+
+        {gameState === 'start' && (
+          <div className="bg-slate-900/50 backdrop-blur-md border border-cyan-900/50 rounded-2xl p-12 text-center shadow-2xl shadow-cyan-900/20">
+            <div className="w-24 h-24 bg-cyan-900/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-cyan-500/30 animate-pulse">
+              <LockIcon className="w-12 h-12 text-cyan-400" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">System Lockdown Initiated</h2>
+            <p className="text-slate-400 mb-8 text-lg max-w-lg mx-auto">
+              Your network is under attack. Answer security protocols correctly to maintain firewall integrity.
+              <br /><span className="text-red-400 text-sm mt-2 block">Warning: 4 failed attempts will result in a breach.</span>
+            </p>
+            <button
+              onClick={startGame}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-bold tracking-wider transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] cursor-pointer"
+            >
+              <PlayIcon className="w-5 h-5 fill-current" />
+              INITIALIZE DEFENSE
+            </button>
           </div>
         )}
 
-        {/* ================================ */}
-        {/* SCREEN 2: GAME PLAY              */}
-        {/* ================================ */}
-        {screen === 'game' && (
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl">
-            
-            {/* Game Info */}
-            <div className="flex justify-around flex-wrap gap-3 mb-5">
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">ROUND</div>
-                <div className="text-3xl font-bold text-white">{currentRound}</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">SCORE</div>
-                <div className="text-3xl font-bold text-white">{score}</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">STREAK</div>
-                <div className="text-3xl font-bold text-white">{streak}</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">LEVEL</div>
-                <div className="text-3xl font-bold text-white">{difficulty.toUpperCase()}</div>
+        {gameState === 'playing' && (
+          <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
+            {/* Question Header */}
+            <div className="bg-slate-800/50 p-6 border-b border-slate-700 flex justify-between items-center">
+              <span className="text-cyan-400 font-mono text-sm">
+                THREAT_LEVEL_{currentQuestion + 1}/{QUESTIONS.length}
+              </span>
+              <div className="flex gap-1">
+                {[...Array(QUESTIONS.length)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-2 h-2 rounded-full ${i < currentQuestion ? 'bg-cyan-500' : i === currentQuestion ? 'bg-white animate-pulse' : 'bg-slate-700'}`}
+                  />
+                ))}
               </div>
             </div>
 
-            {/* Timer */}
-            <div className={`bg-red-500 text-white p-5 rounded-lg text-center text-4xl font-bold mb-5 transition-opacity shadow-lg ${timeLeft <= 10 && timeLeft > 0 ? 'animate-pulse' : ''}`}>
-              {timeLeft}s
-            </div>
+            <div className="p-8">
+              <h3 className="text-xl md:text-2xl font-semibold text-white mb-8 leading-relaxed">
+                {QUESTIONS[currentQuestion].question}
+              </h3>
 
-            {/* Cipher Display */}
-            <div className="bg-white/90 p-10 rounded-lg text-center mb-5 min-h-[100px] flex items-center justify-center shadow-inner">
-              <div className="text-4xl font-bold tracking-widest text-gray-800" style={{ fontFamily: 'monospace' }}>
-                {cipherSymbols}
+              <div className="grid gap-4">
+                {QUESTIONS[currentQuestion].options.map((option, index) => {
+                  let stateStyle = "border-slate-700 hover:border-cyan-500 hover:bg-slate-800/50";
+                  if (isAnswered) {
+                    if (index === QUESTIONS[currentQuestion].correct) {
+                      stateStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-400";
+                    } else if (index === selectedOption) {
+                      stateStyle = "border-red-500 bg-red-500/10 text-red-400";
+                    } else {
+                      stateStyle = "border-slate-800 opacity-50";
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleAnswer(index)}
+                      disabled={isAnswered}
+                      className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group cursor-pointer ${stateStyle}`}
+                    >
+                      <span className="font-medium">{option}</span>
+                      {isAnswered && index === QUESTIONS[currentQuestion].correct && <CheckCircleIcon className="w-5 h-5 text-emerald-500" />}
+                      {isAnswered && index === selectedOption && index !== QUESTIONS[currentQuestion].correct && <XCircleIcon className="w-5 h-5 text-red-500" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Feedback Message */}
-            {feedback.show && (
-              <div className={`p-5 rounded-lg text-center font-bold text-lg mb-5 shadow-md
-                ${feedback.type === 'correct' ? 'bg-green-100 text-green-800 border-2 border-green-200' : 'bg-red-100 text-red-800 border-2 border-red-200'}
-              `}>
-                {feedback.message}
+            {/* Footer / Feedback */}
+            {isAnswered && (
+              <div className="bg-slate-950/50 p-6 border-t border-slate-800 flex justify-between items-center animate-in slide-in-from-bottom-4 fade-in">
+                <div className="max-w-lg">
+                  <p className={`font-bold mb-1 ${feedback === 'correct' ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {feedback === 'correct' ? 'ACCESS GRANTED' : 'SECURITY BREACH DETECTED'}
+                  </p>
+                  <p className="text-slate-400 text-sm">{QUESTIONS[currentQuestion].explanation}</p>
+                </div>
+                <button
+                  onClick={nextQuestion}
+                  className="px-6 py-3 bg-slate-100 hover:bg-white text-slate-900 rounded-lg font-bold transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  {currentQuestion + 1 === QUESTIONS.length ? 'FINISH' : 'NEXT'}
+                  <TerminalIcon className="w-4 h-4" />
+                </button>
               </div>
             )}
-
-            {/* Input Area */}
-            <div className="mb-5">
-              <input 
-                type="text" 
-                className="w-full p-4 text-xl border-2 border-gray-300 rounded-lg mb-4 box-border focus:outline-none focus:border-purple-600 disabled:bg-gray-100 text-gray-900"
-                placeholder="Type your answer here..."
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                onKeyDown={handleInputKeydown}
-                disabled={inputDisabled}
-                autoFocus
-              />
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button 
-                  className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600 hover:scale-105 active:scale-95 disabled:hover:scale-100" 
-                  onClick={submitAnswer} 
-                  disabled={inputDisabled}
-                >
-                  Submit Answer
-                </button>
-                <button 
-                  className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white/30 backdrop-blur-sm text-white border border-white/50 hover:bg-white/50 active:scale-95 disabled:hover:scale-100" 
-                  onClick={skipQuestion} 
-                  disabled={inputDisabled}
-                >
-                  Skip (-10 pts)
-                </button>
-                <button 
-                  className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white/30 backdrop-blur-sm text-white border border-white/50 hover:bg-white/50 active:scale-95 disabled:hover:scale-100" 
-                  onClick={toggleKey}
-                >
-                  Show Key
-                </button>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                <div className="text-sm text-purple-100 opacity-90">Total Rounds</div>
-                <div className="text-3xl font-bold text-white mt-1">{currentRound}</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                <div className="text-sm text-purple-100 opacity-90">Correct</div>
-                <div className="text-3xl font-bold text-white mt-1">{correctCount}</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                <div className="text-sm text-purple-100 opacity-90">Wrong</div>
-                <div className="text-3xl font-bold text-white mt-1">{wrongCount}</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                <div className="text-sm text-purple-100 opacity-90">Accuracy</div>
-                <div className="text-3xl font-bold text-white mt-1">{accuracy}%</div>
-              </div>
-            </div>
           </div>
         )}
 
-        {/* ================================ */}
-        {/* SCREEN 3: PIGPEN KEY             */}
-        {/* ================================ */}
-        {screen === 'key' && (
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
-            <h3 className="text-2xl font-bold text-white mb-5">Pigpen Cipher Key</h3>
-            
-            <div className="bg-gray-100 p-4 sm:p-8 rounded-lg inline-block text-gray-800">
-              <h4 className="text-lg font-semibold">Grid 1: Letters A-I (no dots)</h4>
-              <div className="inline-grid grid-cols-3 gap-0 mb-8 mt-4">
-                {renderKeyCell('A', 1)}
-                {renderKeyCell('B', 2)}
-                {renderKeyCell('C', 3)}
-                {renderKeyCell('D', 4)}
-                {renderKeyCell('E', 5)}
-                {renderKeyCell('F', 6)}
-                {renderKeyCell('G', 7)}
-                {renderKeyCell('H', 8)}
-                {renderKeyCell('I', 9)}
-              </div>
+        {gameState === 'won' && (
+          <div className="bg-slate-900/50 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-12 text-center shadow-2xl shadow-emerald-900/20">
+            <div className="w-24 h-24 bg-emerald-900/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/30">
+              <ShieldIcon className="w-12 h-12 text-emerald-400" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-2">System Secured</h2>
+            <p className="text-emerald-400 mb-8 text-lg">All threats neutralized successfully.</p>
 
-              <h4 className="text-lg font-semibold">Grid 2: Letters J-R (with dots)</h4>
-              <div className="inline-grid grid-cols-3 gap-0 mb-8 mt-4">
-                {renderKeyCell('J', 1, true)}
-                {renderKeyCell('K', 2, true)}
-                {renderKeyCell('L', 3, true)}
-                {renderKeyCell('M', 4, true)}
-                {renderKeyCell('N', 5, true)}
-                {renderKeyCell('O', 6, true)}
-                {renderKeyCell('P', 7, true)}
-                {renderKeyCell('Q', 8, true)}
-                {renderKeyCell('R', 9, true)}
+            <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto mb-8">
+              <div className="bg-slate-800 p-4 rounded-xl">
+                <div className="text-slate-400 text-xs uppercase">Final Score</div>
+                <div className="text-2xl font-bold text-white">{score}</div>
               </div>
-
-              <div>
-                <h4 className="text-lg font-semibold">Letters S-Z: X shapes</h4>
-                <p className="text-gray-600">S, T, U, V = X shapes without dots</p>
-                <p className="text-gray-600">W, X, Y, Z = X shapes with dots</p>
-                <div className='flex gap-4 justify-center text-3xl font-mono mt-4'>
-                  <span>S:◁</span>
-                  <span>T:▷</span>
-                  <span>U:△</span>
-                  <span>V:▽</span>
-                </div>
+              <div className="bg-slate-800 p-4 rounded-xl">
+                <div className="text-slate-400 text-xs uppercase">Integrity</div>
+                <div className="text-2xl font-bold text-emerald-400">{health}%</div>
               </div>
             </div>
 
-            <button 
-              className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white/30 backdrop-blur-sm text-white border border-white/50 hover:bg-white/50 active:scale-95 disabled:hover:scale-100 mt-5" 
-              onClick={toggleKey}
+            <button
+              onClick={startGame}
+              className="inline-flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold transition-all cursor-pointer"
             >
-              Hide Key
+              <RefreshCwIcon className="w-5 h-5" />
+              REBOOT SYSTEM
             </button>
           </div>
         )}
 
-        {/* ================================ */}
-        {/* SCREEN 4: GAME OVER              */}
-        {/* ================================ */}
-        {screen === 'gameover' && (
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
-            <h2 className="text-4xl font-bold text-white mb-6">🎉 Game Complete!</h2>
-            
-            <div className="bg-black/10 p-6 rounded-lg mb-8">
-              <h3 className="text-xl font-semibold text-white mb-4">Your Final Results</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                  <div className="text-sm text-purple-100 opacity-90">Final Score</div>
-                  <div className="text-3xl font-bold text-white mt-1">{score}</div>
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                  <div className="text-sm text-purple-100 opacity-90">Best Streak</div>
-                  <div className="text-3xl font-bold text-white mt-1">{bestStreak}</div>
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                  <div className="text-sm text-purple-100 opacity-90">Correct</div>
-                  <div className="text-3xl font-bold text-white mt-1">{correctCount}</div>
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                  <div className="text-sm text-purple-100 opacity-90">Accuracy</div>
-                  <div className="text-3xl font-bold text-white mt-1">{accuracy}%</div>
-                </div>
-              </div>
+        {gameState === 'lost' && (
+          <div className="bg-slate-900/50 backdrop-blur-md border border-red-500/30 rounded-2xl p-12 text-center shadow-2xl shadow-red-900/20">
+            <div className="w-24 h-24 bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/30">
+              <AlertTriangleIcon className="w-12 h-12 text-red-400" />
             </div>
+            <h2 className="text-3xl font-bold text-white mb-2">System Compromised</h2>
+            <p className="text-red-400 mb-8 text-lg">Firewall integrity critical. Breach successful.</p>
 
-            <button 
-              className="py-4 px-10 rounded-xl text-lg font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600 hover:scale-105 active:scale-95 disabled:hover:scale-100" 
-              onClick={restartGame}
+            <button
+              onClick={startGame}
+              className="inline-flex items-center gap-2 px-8 py-3 bg-red-600 hover:bg-red-500 text-white rounded-lg font-bold transition-all cursor-pointer"
             >
-              Play Again
+              <RefreshCwIcon className="w-5 h-5" />
+              INITIATE RECOVERY
             </button>
           </div>
         )}
-        
+
       </div>
     </div>
   );

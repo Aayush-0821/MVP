@@ -8,20 +8,25 @@ import Profile from "./pages/Profile";
 import Quiz1 from "./pages/Quiz1";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import Layout from "./components/Layout";
+import Quiz2 from "./pages/Quiz2";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MvpLandingPage />} />
-        <Route path="/quiz" element={<Quiz />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/games" element={<Games />} />
-        <Route path="/get-started" element={<GetStarted />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/quiz1" element={<Quiz1 />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/about" element={<About />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<MvpLandingPage />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/games" element={<Games />} />
+          <Route path="/get-started" element={<GetStarted />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/quiz1" element={<Quiz1 />} />
+          <Route path="/quiz2" element={<Quiz2 />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/about" element={<About />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

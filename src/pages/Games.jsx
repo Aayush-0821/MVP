@@ -7,60 +7,69 @@ const Games = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-purple-50 min-h-screen flex flex-col items-center font-[Inter]">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-[Inter] py-12 transition-colors">
       {/* Header */}
-      <header className="text-center mt-12 mb-8 px-4">
-        <h1 className="text-3xl font-bold text-purple-900 mb-2">
-          Welcome to the Games Section
+      <header className="text-center mb-16 px-4">
+        <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-4">
+          Game Arena
         </h1>
-        <p className="text-purple-700 text-base">
-          Explore fun and engaging games! Click on any game to start playing.
+        <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+          Dive into the world of cryptography with our interactive games. Learn by playing!
         </p>
       </header>
 
       {/* Game Cards Grid */}
-      <main className="flex flex-wrap justify-center gap-8 px-6 pb-16">
+      <main className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
         {/* Game Card 1 */}
         <div
           onClick={() => navigate("/quiz1")}
-          className="relative w-64 h-64 bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform transition hover:scale-105 hover:shadow-2xl"
+          className="group relative bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 dark:border-gray-700"
         >
-          <img
-            src={diffieHellman}
-            alt="PinPoint Game"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-purple-900 bg-opacity-80 opacity-0 hover:opacity-100 transition flex flex-col justify-center items-center text-center p-4">
-            <h2 className="text-white text-lg font-semibold mb-2">PinPoint</h2>
-            <p className="text-purple-100 text-sm">
-              Test your knowledge with a series of challenging questions.
+          <div className="h-64 overflow-hidden">
+            <img
+              src={diffieHellman}
+              alt="Diffie-Hellman Key Exchange"
+              className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div className="p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 transition-colors">
+              CYBER DEFENSE PROTOCOL
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Master the art of secure key exchange. Calculate public keys and shared secrets in this interactive simulation.
             </p>
+            <div className="flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform">
+              Play Now →
+            </div>
           </div>
         </div>
 
         {/* Game Card 2 */}
         <div
           onClick={() => navigate("/quiz2")}
-          className="relative w-64 h-64 bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer transform transition hover:scale-105 hover:shadow-2xl"
+          className="group relative bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 dark:border-gray-700"
         >
-          <img
-            src={pigPen}
-            alt="Pig Pen Game"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-purple-900 bg-opacity-80 opacity-0 hover:opacity-100 transition flex flex-col justify-center items-center text-center p-4">
-            <h2 className="text-white text-lg font-semibold mb-2">Pig Pen</h2>
-            <p className="text-purple-100 text-sm">
-              Solve puzzles and navigate challenges to uncover the mystery.
+          <div className="h-64 overflow-hidden">
+            <img
+              src={pigPen}
+              alt="Pig Pen Cipher"
+              className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div className="p-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 transition-colors">
+              Pig Pen Cipher
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Decode secret messages using the ancient Pig Pen cipher. Test your pattern recognition skills!
             </p>
+            <div className="flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform">
+              Play Now →
+            </div>
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="text-center text-purple-600 text-sm mb-6">
-        &copy; 2025 MVP Platform. All rights reserved.
-      </footer>
     </div>
   );
 };

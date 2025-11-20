@@ -1,11 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
-
 const About = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all">
-      <Navbar />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative">
@@ -21,7 +18,7 @@ const About = () => {
           </h1>
 
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            We're on a mission to make encryption and cybersecurity education accessible, 
+            We're on a mission to make encryption and cybersecurity education accessible,
             engaging, and effective for everyone. Learn by doing, not just reading.
           </p>
         </div>
@@ -35,7 +32,7 @@ const About = () => {
               Our <span className="text-purple-600">Mission</span>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              To revolutionize how people learn encryption and cybersecurity through 
+              To revolutionize how people learn encryption and cybersecurity through
               interactive, gamified experiences that make complex concepts simple and fun.
             </p>
           </div>
@@ -46,7 +43,7 @@ const About = () => {
               <div className="text-5xl mb-4">🎓</div>
               <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Learn by Doing</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Interactive challenges that teach you through hands-on practice, 
+                Interactive challenges that teach you through hands-on practice,
                 not passive reading.
               </p>
             </div>
@@ -55,7 +52,7 @@ const About = () => {
               <div className="text-5xl mb-4">🎮</div>
               <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Gamified Learning</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Turn education into an adventure with points, streaks, and 
+                Turn education into an adventure with points, streaks, and
                 achievements that keep you motivated.
               </p>
             </div>
@@ -64,7 +61,7 @@ const About = () => {
               <div className="text-5xl mb-4">🚀</div>
               <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">For Everyone</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Whether you're 13 or 113, beginner or expert, we have content 
+                Whether you're 13 or 113, beginner or expert, we have content
                 tailored to your level.
               </p>
             </div>
@@ -89,7 +86,7 @@ const About = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Interactive Lessons</h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Every concept comes with hands-on exercises that reinforce your 
+                  Every concept comes with hands-on exercises that reinforce your
                   understanding through practice.
                 </p>
               </div>
@@ -118,7 +115,7 @@ const About = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Track Progress</h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Detailed analytics and insights help you understand your strengths 
+                  Detailed analytics and insights help you understand your strengths
                   and areas for improvement.
                 </p>
               </div>
@@ -133,7 +130,7 @@ const About = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Earn Achievements</h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Unlock badges and certificates as you master new skills and 
+                  Unlock badges and certificates as you master new skills and
                   complete challenges.
                 </p>
               </div>
@@ -176,7 +173,7 @@ const About = () => {
             Ready to Start Learning?
           </h2>
           <p className="text-xl text-purple-100 mb-8 leading-relaxed">
-            Join thousands of learners mastering encryption and cybersecurity through 
+            Join thousands of learners mastering encryption and cybersecurity through
             interactive challenges and gamified experiences.
           </p>
           <Link to="/get-started">
@@ -188,13 +185,7 @@ const About = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="text-sm text-gray-400">
-            © 2025 MVP Worldwide, Inc. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      {/* Footer removed (handled by Layout) */}
     </div>
   );
 };
