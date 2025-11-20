@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Quiz1 from "./pages/Quiz1";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import Community from "./pages/Community";
 import Layout from "./components/Layout";
 import Quiz2 from "./pages/Quiz2";
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/quiz1" element={<Quiz1 />} />
           <Route path="/quiz2" element={<Quiz2 />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/community" element={<Community />} />
           <Route path="/about" element={<About />} />
         </Route>
       </Routes>

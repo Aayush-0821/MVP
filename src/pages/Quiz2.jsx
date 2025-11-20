@@ -233,9 +233,9 @@ export default function PigpenCipherGame() {
             7: 'border-r-0 border-t-0', 8: 'border-t-0', 9: 'border-l-0 border-t-0',
         };
         return (
-            <div className={`w-20 h-20 sm:w-24 sm:h-24 border-4 border-gray-800 flex items-center justify-center text-xl sm:text-2xl font-bold bg-white text-gray-800 relative ${borderClasses[pos]}`}>
+            <div className={`w-20 h-20 sm:w-24 sm:h-24 border-4 border-gray-800 dark:border-gray-600 flex items-center justify-center text-xl sm:text-2xl font-bold bg-white dark:bg-gray-700 text-gray-800 dark:text-white relative ${borderClasses[pos]}`}>
                 {letter}
-                {hasDot && <span className="absolute text-5xl text-purple-600" style={{ transform: 'translate(0, -3px)' }}>•</span>}
+                {hasDot && <span className="absolute text-5xl text-red-600" style={{ transform: 'translate(0, -3px)' }}>•</span>}
             </div>
         );
     };
@@ -254,7 +254,7 @@ export default function PigpenCipherGame() {
                 {/* SCREEN 1: CHOOSE DIFFICULTY      */}
                 {/* ================================ */}
                 {screen === 'difficulty' && (
-                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
+                    <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
                         <h2 className="text-2xl font-bold mb-8 text-white">Choose Your Difficulty Level</h2>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <button
@@ -291,19 +291,19 @@ export default function PigpenCipherGame() {
                         {/* Game Info */}
                         <div className="flex justify-around flex-wrap gap-3 mb-5">
                             <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">ROUND</div>
+                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">ROUND</div>
                                 <div className="text-3xl font-bold text-white">{currentRound}</div>
                             </div>
                             <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">SCORE</div>
+                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">SCORE</div>
                                 <div className="text-3xl font-bold text-white">{score}</div>
                             </div>
                             <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">STREAK</div>
+                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">STREAK</div>
                                 <div className="text-3xl font-bold text-white">{streak}</div>
                             </div>
                             <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-purple-100 font-bold uppercase tracking-wider">LEVEL</div>
+                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">LEVEL</div>
                                 <div className="text-3xl font-bold text-white">{difficulty.toUpperCase()}</div>
                             </div>
                         </div>
@@ -314,8 +314,8 @@ export default function PigpenCipherGame() {
                         </div>
 
                         {/* Cipher Display */}
-                        <div className="bg-white/90 p-10 rounded-lg text-center mb-5 min-h-[100px] flex items-center justify-center shadow-inner">
-                            <div className="text-4xl font-bold tracking-widest text-gray-800" style={{ fontFamily: 'monospace' }}>
+                        <div className="bg-white/90 dark:bg-gray-800 p-10 rounded-lg text-center mb-5 min-h-[100px] flex items-center justify-center shadow-inner">
+                            <div className="text-4xl font-bold tracking-widest text-gray-800 dark:text-white" style={{ fontFamily: 'monospace' }}>
                                 {cipherSymbols}
                             </div>
                         </div>
@@ -333,7 +333,7 @@ export default function PigpenCipherGame() {
                         <div className="mb-5">
                             <input
                                 type="text"
-                                className="w-full p-4 text-xl border-2 border-gray-300 rounded-lg mb-4 box-border focus:outline-none focus:border-purple-600 disabled:bg-gray-100 text-gray-900"
+                                className="w-full p-4 text-xl border-2 border-gray-300 dark:border-gray-600 rounded-lg mb-4 box-border focus:outline-none focus:border-red-600 disabled:bg-gray-100 dark:disabled:bg-gray-700 text-gray-900 dark:text-white"
                                 placeholder="Type your answer here..."
                                 value={userInput}
                                 onChange={(e) => setUserInput(e.target.value)}
@@ -368,19 +368,19 @@ export default function PigpenCipherGame() {
                         {/* Stats */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-purple-100 opacity-90">Total Rounds</div>
+                                <div className="text-sm text-red-100 opacity-90">Total Rounds</div>
                                 <div className="text-3xl font-bold text-white mt-1">{currentRound}</div>
                             </div>
                             <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-purple-100 opacity-90">Correct</div>
+                                <div className="text-sm text-red-100 opacity-90">Correct</div>
                                 <div className="text-3xl font-bold text-white mt-1">{correctCount}</div>
                             </div>
                             <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-purple-100 opacity-90">Wrong</div>
+                                <div className="text-sm text-red-100 opacity-90">Wrong</div>
                                 <div className="text-3xl font-bold text-white mt-1">{wrongCount}</div>
                             </div>
                             <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-purple-100 opacity-90">Accuracy</div>
+                                <div className="text-sm text-red-100 opacity-90">Accuracy</div>
                                 <div className="text-3xl font-bold text-white mt-1">{accuracy}%</div>
                             </div>
                         </div>
@@ -394,7 +394,7 @@ export default function PigpenCipherGame() {
                     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
                         <h3 className="text-2xl font-bold text-white mb-5">Pigpen Cipher Key</h3>
 
-                        <div className="bg-gray-100 p-4 sm:p-8 rounded-lg inline-block text-gray-800">
+                        <div className="bg-gray-100 dark:bg-gray-800 p-4 sm:p-8 rounded-lg inline-block text-gray-800 dark:text-white">
                             <h4 className="text-lg font-semibold">Grid 1: Letters A-I (no dots)</h4>
                             <div className="inline-grid grid-cols-3 gap-0 mb-8 mt-4">
                                 {renderKeyCell('A', 1)}
@@ -421,10 +421,10 @@ export default function PigpenCipherGame() {
                                 {renderKeyCell('R', 9, true)}
                             </div>
 
-                            <div>
+                                <div>
                                 <h4 className="text-lg font-semibold">Letters S-Z: X shapes</h4>
-                                <p className="text-gray-600">S, T, U, V = X shapes without dots</p>
-                                <p className="text-gray-600">W, X, Y, Z = X shapes with dots</p>
+                                <p className="text-gray-600 dark:text-gray-300">S, T, U, V = X shapes without dots</p>
+                                <p className="text-gray-600 dark:text-gray-300">W, X, Y, Z = X shapes with dots</p>
                                 <div className='flex gap-4 justify-center text-3xl font-mono mt-4'>
                                     <span>S:◁</span>
                                     <span>T:▷</span>
@@ -454,19 +454,19 @@ export default function PigpenCipherGame() {
                             <h3 className="text-xl font-semibold text-white mb-4">Your Final Results</h3>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-purple-100 opacity-90">Final Score</div>
+                                    <div className="text-sm text-red-100 opacity-90">Final Score</div>
                                     <div className="text-3xl font-bold text-white mt-1">{score}</div>
                                 </div>
                                 <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-purple-100 opacity-90">Best Streak</div>
+                                    <div className="text-sm text-red-100 opacity-90">Best Streak</div>
                                     <div className="text-3xl font-bold text-white mt-1">{bestStreak}</div>
                                 </div>
                                 <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-purple-100 opacity-90">Correct</div>
+                                    <div className="text-sm text-red-100 opacity-90">Correct</div>
                                     <div className="text-3xl font-bold text-white mt-1">{correctCount}</div>
                                 </div>
                                 <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-purple-100 opacity-90">Accuracy</div>
+                                    <div className="text-sm text-red-100 opacity-90">Accuracy</div>
                                     <div className="text-3xl font-bold text-white mt-1">{accuracy}%</div>
                                 </div>
                             </div>

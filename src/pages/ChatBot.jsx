@@ -77,7 +77,7 @@ export default function ChatBot() {
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="fixed bottom-6 right-6 w-16 h-16 bg-purple-600 text-white rounded-full shadow-xl flex items-center justify-center text-3xl hover:scale-110 transition-transform z-50 cursor-pointer"
+                    className="fixed bottom-6 right-6 w-16 h-16 bg-red-600 text-white rounded-full shadow-xl flex items-center justify-center text-3xl hover:scale-110 transition-transform z-50 cursor-pointer"
                 >
                     💬
                 </button>
@@ -85,7 +85,7 @@ export default function ChatBot() {
 
             {isOpen && (
                 <div className="fixed inset-0 bg-black/10 flex justify-end items-end p-4 z-50">
-                    <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl flex flex-col overflow-hidden relative border border-purple-200">
+                    <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl flex flex-col overflow-hidden relative border border-red-200 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
 
                         {/* Red Close Button */}
                         <button
@@ -96,12 +96,12 @@ export default function ChatBot() {
                         </button>
 
                         {/* Header */}
-                        <div className="p-4 bg-purple-600 text-white font-semibold border-b text-xl">
+                        <div className="p-4 bg-red-600 text-white font-semibold border-b text-xl">
                             MVP-Bot
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 p-4 overflow-y-auto max-h-[450px] space-y-3 bg-purple-50">
+                        <div className="flex-1 p-4 overflow-y-auto max-h-[450px] space-y-3 bg-red-50 dark:bg-gray-900">
                             {messages.map((msg, i) => {
                                 const html = DOMPurify.sanitize(marked(msg.text));
                                 return (
@@ -109,8 +109,8 @@ export default function ChatBot() {
                                         key={i}
                                         className={`p-3 rounded-xl max-w-[80%] text-black shadow-sm ${
                                             msg.sender === "user"
-                                                ? "ml-auto bg-purple-200"
-                                                : "bg-white"
+                                                ? "ml-auto bg-red-200 dark:bg-red-700 text-black dark:text-white"
+                                                : "bg-white dark:bg-gray-700 text-black dark:text-white"
                                         }`}
                                         dangerouslySetInnerHTML={{ __html: html }}
                                     ></div>
@@ -118,7 +118,7 @@ export default function ChatBot() {
                             })}
 
                             {isTyping && (
-                                <div className="p-3 rounded-xl bg-purple-100 max-w-[60%] text-black shadow-sm">
+                                <div className="p-3 rounded-xl bg-red-100 max-w-[60%] text-black shadow-sm dark:bg-gray-700 dark:text-white">
                                     <span className="animate-pulse">MVPBot is typing...</span>
                                 </div>
                             )}
@@ -129,7 +129,7 @@ export default function ChatBot() {
                                         <button
                                             key={i}
                                             onClick={() => handleUserMessage(opt)}
-                                            className="w-full py-2 px-4 bg-purple-100 hover:bg-purple-200 rounded-xl border text-left text-black shadow-sm"
+                                            className="w-full py-2 px-4 bg-red-100 hover:bg-red-200 rounded-xl border text-left text-black shadow-sm dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
                                         >
                                             {opt}
                                         </button>
@@ -139,9 +139,9 @@ export default function ChatBot() {
                         </div>
 
                         {/* Message Input */}
-                        <div className="p-3 border-t flex gap-2 bg-white">
+                        <div className="p-3 border-t flex gap-2 bg-white dark:bg-gray-700">
                             <input
-                                className="flex-1 p-2 border rounded-xl text-black bg-purple-50"
+                                className="flex-1 p-2 border rounded-xl text-black bg-red-50 dark:bg-gray-800 dark:text-white"
                                 placeholder="Type a message..."
                                 value={userInput}
                                 onChange={(e) => setUserInput(e.target.value)}
@@ -149,7 +149,7 @@ export default function ChatBot() {
                             />
                             <button
                                 onClick={handleSend}
-                                className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 cursor-pointer"
+                                className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 cursor-pointer"
                             >
                                 Send
                             </button>

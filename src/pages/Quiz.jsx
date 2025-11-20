@@ -140,7 +140,7 @@ export default function App() {
    * Gets the appropriate button style based on answer state
    */
   const getButtonClass = (answer) => {
-    const baseClass = "p-4 rounded-lg border-2 text-left w-full transition-all duration-200 font-medium text-gray-800";
+    const baseClass = "p-4 rounded-lg border-2 text-left w-full transition-all duration-200 font-medium text-gray-800 dark:text-white";
 
     if (!isAnswerChecked) {
       return `${baseClass} border-gray-300 hover:bg-pink-100 cursor-pointer`;
@@ -151,11 +151,11 @@ export default function App() {
     const isSelected = selectedAnswer === answer;
 
     if (isCorrect) {
-      return `${baseClass} bg-green-100 border-green-500 text-green-800 font-semibold`;
+      return `${baseClass} bg-green-100 border-green-500 text-green-800 dark:text-green-200 font-semibold`;
     }
 
     if (isSelected && !isCorrect) {
-      return `${baseClass} bg-red-100 border-red-500 text-red-800 font-semibold`;
+      return `${baseClass} bg-red-100 border-red-500 text-red-800 dark:text-red-200 font-semibold`;
     }
 
     // Default for unchecked, incorrect answers after selection
@@ -192,11 +192,11 @@ export default function App() {
     saveResult();
   }, [showScore]);
   return (
-    <div className="font-sans min-h-screen bg-gray-50 text-gray-900">
+    <div className="font-sans min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white">
       
       {/* --- Main Quiz Container --- */}
       <main className="flex justify-center items-center py-10 md:py-20 px-4">
-        <div className="app w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-10">
+        <div className="app w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-10 dark:bg-gray-800 dark:text-white">
           
           {showScore ? (
             // --- Score View ---

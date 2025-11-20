@@ -27,21 +27,22 @@ const Navbar = () => {
     <nav className="flex items-center justify-between px-8 py-4 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-lg sticky top-0 z-50">
       {/* Logo Section */}
       <Link to="/" className="flex items-center gap-2 group">
-        <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-all">
+        <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-all">
           <img src={logo} alt="Logo" className="w-7 h-7" />
         </div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
           MVP
         </h1>
       </Link>
 
       {/* Center Navigation Links */}
       <div className="hidden md:flex gap-10 text-gray-700 dark:text-gray-200 font-medium">
-        <Link to="/quiz" className="hover:text-purple-600 dark:hover:text-purple-400 transition">Quiz</Link>
-        <Link to="/games" className="hover:text-purple-600 dark:hover:text-purple-400 transition">Games</Link>
-        <Link to="/about" className="hover:text-purple-600 dark:hover:text-purple-400 transition">About</Link>
+        <Link to="/quiz" className="hover:text-red-600 dark:hover:text-red-400 transition">Quiz</Link>
+        <Link to="/community" className="hover:text-red-600 dark:hover:text-red-400 transition">Community</Link>
+        <Link to="/games" className="hover:text-red-600 dark:hover:text-red-400 transition">Games</Link>
+        <Link to="/about" className="hover:text-red-600 dark:hover:text-red-400 transition">About</Link>
         {!user && (
-          <Link to="/login" className="hover:text-purple-600 dark:hover:text-purple-400 transition">Login</Link>
+          <Link to="/login" className="hover:text-red-600 dark:hover:text-red-400 transition">Login</Link>
         )}
       </div>
 
@@ -55,12 +56,22 @@ const Navbar = () => {
           alt="Toggle theme"
         />
 
+        {/* Discord / Community link */}
+        <a
+          href="https://discord.gg/your-invite-code"
+          target="_blank"
+          rel="noreferrer"
+          className="hidden sm:inline-flex items-center gap-2 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+        >
+          Discord
+        </a>
+
         {/* Profile Avatar */}
         {user && (
           <div className="relative">
             <div
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white flex items-center justify-center cursor-pointer hover:scale-110 transition"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-blue-600 text-white flex items-center justify-center cursor-pointer hover:scale-110 transition"
             >
               {userInitial()}
             </div>

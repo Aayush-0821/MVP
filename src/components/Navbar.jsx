@@ -36,18 +36,20 @@ const Navbar = () => {
             </Link>
 
             {/* Center Navigation Links */}
-            <div className="hidden md:flex gap-10 text-gray-700 dark:text-gray-200 font-medium">
-                <Link to="/quiz" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Quiz</Link>
-                <Link to="/games" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Games</Link>
-                <Link to="/about" className="hover:text-blue-600 dark:hover:text-blue-400 transition">About</Link>
+            <div className="hidden md:flex gap-10 text-gray-700 dark:text-white font-medium">
+                    <Link to="/quiz" className="hover:text-red-600 dark:hover:text-red-400 transition">Quiz</Link>
+                    <Link to="/community" className="hover:text-red-600 dark:hover:text-red-400 transition">Community</Link>
+                    <Link to="/games" className="hover:text-red-600 dark:hover:text-red-400 transition">Games</Link>
+                    <Link to="/about" className="hover:text-red-600 dark:hover:text-red-400 transition">About</Link>
                 {!user && (
-                    <Link to="/login" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Login</Link>
+                    <Link to="/login" className="hover:text-blue-600 dark:text-white dark:hover:text-blue-400 transition">Login</Link>
                 )}
             </div>
 
             {/* Right side - Theme Toggle & Profile */}
             <div className="flex items-center gap-4">
                 {/* Dark Mode Toggle */}
+
                 <img
                     src={theme === "dark" ? sun : moon}
                     onClick={toggleTheme}
@@ -55,22 +57,32 @@ const Navbar = () => {
                     alt="Toggle theme"
                 />
 
+                {/* Discord / Community link */}
+                <a
+                    href="https://discord.gg/your-invite-code"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hidden sm:inline-flex items-center gap-2 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                >
+                    Discord
+                </a>
+
                 {/* Profile Avatar */}
                 {user && (
                     <div className="relative">
                         <div
                             onClick={() => setShowProfileMenu(!showProfileMenu)}
-                            className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center cursor-pointer hover:scale-110 transition"
+                            className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-blue-600 text-white flex items-center justify-center cursor-pointer hover:scale-110 transition"
                         >
                             {userInitial()}
                         </div>
 
                         {showProfileMenu && (
-                            <div className="absolute right-0 mt-3 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-xl p-3 text-sm animate-fadeIn">
-                                <Link to="/dashboard" className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">Dashboard</Link>
+                            <div className="absolute right-0 mt-3 w-44 bg-white dark:bg-gray-800 dark:text-white rounded-lg shadow-xl p-3 text-sm animate-fadeIn">
+                                <Link to="/dashboard" className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-white rounded">Dashboard</Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="block w-full text-left p-2 hover:bg-red-500 hover:text-white rounded"
+                                    className="block w-full text-left p-2 hover:bg-red-500 hover:text-white dark:text-white rounded"
                                 >
                                     Logout
                                 </button>

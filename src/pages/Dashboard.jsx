@@ -84,13 +84,13 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900 dark:text-white">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
 
         {/* Profile Card */}
         {user && (
-          <div className="mb-10 p-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl shadow-lg text-white">
+          <div className="mb-10 p-8 bg-gradient-to-br from-red-600 to-indigo-600 rounded-2xl shadow-lg text-white">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-6">
                 <img
@@ -100,8 +100,8 @@ export default function Dashboard() {
                 />
                 <div>
                   <h2 className="text-3xl font-bold">{myProfile?.display_name ?? myProfile?.full_name ?? user.email}</h2>
-                  <p className="text-purple-100 text-sm">{myProfile?.username ?? 'No username'}</p>
-                  <p className="text-purple-100">{user.email}</p>
+                  <p className="text-red-100 text-sm">{myProfile?.username ?? 'No username'}</p>
+                  <p className="text-red-100">{user.email}</p>
                 </div>
               </div>
             </div>
@@ -110,43 +110,43 @@ export default function Dashboard() {
             <div className="mt-8 grid grid-cols-3 gap-4">
               <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center">
                 <div className="text-3xl font-bold">{myStats?.totalGames ?? 0}</div>
-                <div className="text-purple-100 text-sm">Total Games</div>
+                <div className="text-red-100 text-sm">Total Games</div>
               </div>
               <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center">
                 <div className="text-3xl font-bold">{myStats?.best ?? 0}</div>
-                <div className="text-purple-100 text-sm">Best Score</div>
+                <div className="text-red-100 text-sm">Best Score</div>
               </div>
               <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center">
                 <div className="text-3xl font-bold">{myStats?.totalPoints ?? 0}</div>
-                <div className="text-purple-100 text-sm">Total Points</div>
+                <div className="text-red-100 text-sm">Total Points</div>
               </div>
             </div>
           </div>
         )}
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">🏆 Leaderboard</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">🏆 Leaderboard</h2>
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Loading leaderboard...</div>
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">Loading leaderboard...</div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              {leaderboard.length === 0 && <div className="p-8 text-center text-gray-500">No scores yet.</div>}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+              {leaderboard.length === 0 && <div className="p-8 text-center text-gray-500 dark:text-gray-400">No scores yet.</div>}
               {leaderboard.map((row, idx) => (
                 <div key={idx} className={`p-4 flex justify-between items-center border-b last:border-b-0 ${idx < 3 ? 'bg-gradient-to-r from-yellow-50 to-transparent' : ''}`}>
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 text-white font-bold flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-indigo-500 text-white font-bold flex items-center justify-center">
                       {idx + 1}
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-800">{row.username ?? row.display_name ?? row.user_email ?? 'Anonymous'}</div>
-                      <div className="text-xs text-gray-500">{new Date(row.latest_at).toLocaleDateString()}</div>
+                      <div className="font-semibold text-gray-800 dark:text-white">{row.username ?? row.display_name ?? row.user_email ?? 'Anonymous'}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">{new Date(row.latest_at).toLocaleDateString()}</div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-indigo-600">{row.best_score}</div>
-                    {idx === 0 && <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">👑 Leader</span>}
-                    {idx === 1 && <span className="text-xs bg-gray-300 text-gray-800 px-2 py-1 rounded-full">🥈 2nd</span>}
-                    {idx === 2 && <span className="text-xs bg-orange-200 text-orange-800 px-2 py-1 rounded-full">🥉 3rd</span>}
+                    <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">{row.best_score}</div>
+                    {idx === 0 && <span className="text-xs bg-yellow-200 text-yellow-800 dark:bg-gray-700 dark:text-white px-2 py-1 rounded-full">👑 Leader</span>}
+                    {idx === 1 && <span className="text-xs bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-white px-2 py-1 rounded-full">🥈 2nd</span>}
+                    {idx === 2 && <span className="text-xs bg-orange-200 text-orange-800 dark:bg-gray-700 dark:text-white px-2 py-1 rounded-full">🥉 3rd</span>}
                   </div>
                 </div>
               ))}
@@ -155,21 +155,21 @@ export default function Dashboard() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">📊 Recent Results</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">📊 Recent Results</h2>
           <div className="grid gap-4">
-            {recent.length === 0 && <div className="p-8 text-center bg-white rounded-lg text-gray-500">No results yet.</div>}
+            {recent.length === 0 && <div className="p-8 text-center bg-white dark:bg-gray-800 rounded-lg text-gray-500 dark:text-gray-400">No results yet.</div>}
             {recent.map(r => {
               const profile = profilesMap.get(r.user_id) ?? profilesMap.get(r.user_email);
               const name = profile?.username ?? profile?.display_name ?? r.user_email ?? r.user_id ?? 'anonymous';
               return (
-                <div key={r.id} className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition flex justify-between items-center">
+                <div key={r.id} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition flex justify-between items-center">
                   <div>
-                    <div className="font-semibold text-gray-800">{name}</div>
-                    <div className="text-sm text-gray-500">{r.quiz} • {new Date(r.created_at).toLocaleString()}</div>
+                    <div className="font-semibold text-gray-800 dark:text-white">{name}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{r.quiz} • {new Date(r.created_at).toLocaleString()}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-green-600">{r.score}{r.max_score ? ` / ${r.max_score}` : ''}</div>
-                    {r.max_score && <div className="text-xs text-gray-500">{Math.round((r.score / r.max_score) * 100)}% correct</div>}
+                    {r.max_score && <div className="text-xs text-gray-500 dark:text-gray-400">{Math.round((r.score / r.max_score) * 100)}% correct</div>}
                   </div>
                 </div>
               );

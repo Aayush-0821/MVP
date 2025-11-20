@@ -16,17 +16,17 @@ const MvpLandingPage = () => {
   const [activeDay, setActiveDay] = useState(2);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-red-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all">
 
       {/* Hero Section */}
       <section className="pt-10 pb-20 px-6 relative">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-block mb-6 px-4 py-2 bg-purple-100 rounded-full text-purple-700 font-medium text-sm animate-pulse">
+          <div className="inline-block mb-6 px-4 py-2 bg-red-100 rounded-full text-red-700 font-medium text-sm animate-pulse">
             🚀 Join 10,000+ learners worldwide
           </div>
 
           <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight text-gray-900 dark:text-white">
-            <span className="bg-linear-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-red-600 via-blue-600 to-red-600 bg-clip-text text-transparent">
               Learn by Doing
             </span>
           </h1>
@@ -36,7 +36,7 @@ const MvpLandingPage = () => {
           </p>
 
           <Link to="/get-started">
-            <button className="px-8 py-4 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <button className="px-8 py-4 bg-linear-to-r from-red-600 to-blue-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
               Get Started Free →
             </button>
           </Link>
@@ -58,8 +58,8 @@ const MvpLandingPage = () => {
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="relative group">
-            <div className="absolute inset-0 bg-linear-to-br from-purple-600 to-blue-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
-            <div className="relative w-full aspect-square bg-linear-to-br from-purple-100 to-blue-100 rounded-3xl p-12 flex items-center justify-center">
+            <div className="absolute inset-0 bg-linear-to-br from-red-600 to-blue-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+            <div className="relative w-full aspect-square bg-linear-to-br from-red-100 to-blue-100 rounded-3xl p-12 flex items-center justify-center">
               <svg className="w-full h-full" viewBox="0 0 200 200">
                 <defs>
                   <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -97,7 +97,7 @@ const MvpLandingPage = () => {
 
           <div>
             <h2 className="text-5xl font-bold mb-6 leading-tight text-gray-900 dark:text-white">
-              Concepts<br />that <span className="text-purple-600">click</span>
+              Concepts<br />that <span className="text-red-600">click</span>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
               Interactive lessons make even complex ideas easy to grasp. Instant, custom feedback accelerates your understanding.
@@ -118,9 +118,9 @@ const MvpLandingPage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-linear-to-br from-purple-600 to-blue-600 rounded-2xl p-6 text-white transform hover:scale-105 hover:rotate-1 transition-all cursor-pointer relative overflow-hidden shadow-xl">
-              <div className="absolute top-4 right-4 bg-yellow-400 text-purple-900 text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+            <div className="grid grid-cols-2 gap-4">
+            <div className="bg-linear-to-br from-red-600 to-blue-600 rounded-2xl p-6 text-white transform hover:scale-105 hover:rotate-1 transition-all cursor-pointer relative overflow-hidden shadow-xl">
+              <div className="absolute top-4 right-4 bg-yellow-400 text-red-900 text-xs font-bold px-3 py-1 rounded-full animate-bounce">
                 FOR YOU
               </div>
               <img src={encryptionLearning1} alt="Encryption Fundamentals" className="w-16 h-16 mt-4 mb-4 rounded-lg" />
@@ -128,9 +128,9 @@ const MvpLandingPage = () => {
               <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-tl-full"></div>
             </div>
 
-            <div className="bg-linear-to-br from-blue-100 to-purple-100 rounded-2xl p-6 transform hover:scale-105 hover:-rotate-1 transition-all cursor-pointer shadow-lg">
+            <div className="bg-linear-to-br from-blue-100 to-red-100 rounded-2xl p-6 transform hover:scale-105 hover:-rotate-1 transition-all cursor-pointer shadow-lg">
               <img src={encryptionLearning2} alt="Gamified Learning" className="w-16 h-16 mb-4 rounded-lg" />
-              <p className="font-semibold text-gray-800">Gamified Learning</p>
+              <p className="font-semibold text-gray-800 dark:text-white">Gamified Learning</p>
             </div>
           </div>
         </div>
@@ -182,19 +182,19 @@ const MvpLandingPage = () => {
       </section>
 
       {/* Effective Section */}
-      <section className="py-20 px-6 bg-linear-to-br from-purple-100 via-blue-100 to-purple-100 dark:from-purple-900/20 dark:via-blue-900/20 dark:to-purple-900/20">
+      <section className="py-20 px-6 bg-linear-to-br from-red-100 via-blue-100 to-red-100 dark:from-red-900/20 dark:via-blue-900/20 dark:to-red-900/20">
         <div className="max-w-6xl mx-auto text-center">
           <div className="mb-8">
             <div className="inline-block bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-shadow">
               <div className="text-6xl mb-4 animate-pulse">🔒</div>
               <div className="flex gap-2 items-center justify-center">
-                <div className="w-3 h-3 bg-purple-600 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse"></div>
                 <div
                   className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"
                   style={{ animationDelay: "0.2s" }}
                 ></div>
                 <div
-                  className="w-3 h-3 bg-purple-600 rounded-full animate-pulse"
+                  className="w-3 h-3 bg-red-600 rounded-full animate-pulse"
                   style={{ animationDelay: "0.4s" }}
                 ></div>
               </div>
@@ -202,7 +202,7 @@ const MvpLandingPage = () => {
           </div>
 
           <h2 className="text-5xl font-bold mb-4 text-gray-900 dark:text-white">
-            <span className="text-purple-600">More effective.</span>
+            <span className="text-red-600">More effective.</span>
             <br />
             <span className="text-blue-600">More fun.</span>
           </h2>

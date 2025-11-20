@@ -110,8 +110,8 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-purple-50 flex items-center justify-center min-h-screen px-4">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+    <div className="bg-red-50 dark:bg-gray-900 dark:text-white flex items-center justify-center min-h-screen px-4">
+      <div className="bg-white dark:bg-gray-800 dark:text-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <div className="flex justify-center mb-6">
           <img src={logo} alt="Logo" className="w-16 h-16" />
         </div>
@@ -120,8 +120,8 @@ const Login = () => {
           <button
             className={`px-4 py-2 rounded-full text-sm font-semibold ${
               mode === "login"
-                ? "bg-purple-600 text-white"
-                : "bg-purple-100 text-purple-700"
+                ? "bg-red-600 text-white"
+                : "bg-red-100 text-red-700"
             }`}
             onClick={() => setMode("login")}
           >
@@ -130,8 +130,8 @@ const Login = () => {
           <button
             className={`px-4 py-2 rounded-full text-sm font-semibold ${
               mode === "signup"
-                ? "bg-purple-600 text-white"
-                : "bg-purple-100 text-purple-700"
+                ? "bg-red-600 text-white"
+                : "bg-red-100 text-red-700"
             }`}
             onClick={() => setMode("signup")}
           >
@@ -139,34 +139,34 @@ const Login = () => {
           </button>
         </div>
 
-        <h2 className="text-2xl font-bold text-center text-purple-900 mb-4">{title}</h2>
+        <h2 className="text-2xl font-bold text-center text-red-900 mb-4">{title}</h2>
 
         <button
           onClick={onGoogle}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-2 border border-purple-200 rounded-full py-3 hover:bg-purple-100 transition mb-4 disabled:opacity-60"
+          className="w-full flex items-center justify-center gap-2 border border-red-200 rounded-full py-3 hover:bg-red-100 transition mb-4 disabled:opacity-60"
         >
           <img
             src="https://www.svgrepo.com/show/355037/google.svg"
             alt="Google"
             className="w-5 h-5"
           />
-          <span className="text-purple-800 font-medium">
+          <span className="text-red-800 font-medium">
             {mode === "login" ? "Login" : "Sign Up"} with Google
           </span>
         </button>
 
         <div className="flex items-center my-4">
-          <hr className="flex-1 border-purple-200" />
-          <span className="px-2 text-purple-500 text-sm">or with email</span>
-          <hr className="flex-1 border-purple-200" />
+          <hr className="flex-1 border-red-200" />
+          <span className="px-2 text-red-500 text-sm">or with email</span>
+          <hr className="flex-1 border-red-200" />
         </div>
 
         <form onSubmit={onSubmit} className="space-y-3">
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-3 border border-purple-300 rounded-lg"
+            className="w-full p-3 border border-red-300 rounded-lg"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -174,7 +174,7 @@ const Login = () => {
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-3 border border-purple-300 rounded-lg"
+            className="w-full p-3 border border-red-300 rounded-lg"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -184,7 +184,7 @@ const Login = () => {
               <input
                 type="password"
                 placeholder="Confirm password"
-                className="w-full p-3 border border-purple-300 rounded-lg"
+                className="w-full p-3 border border-red-300 rounded-lg"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
               />
@@ -192,7 +192,7 @@ const Login = () => {
               <input
                 type="text"
                 placeholder="Full name"
-                className="w-full p-3 border border-purple-300 rounded-lg"
+                className="w-full p-3 border border-red-300 rounded-lg"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
               />
@@ -200,7 +200,7 @@ const Login = () => {
               <input
                 type="text"
                 placeholder="Username"
-                className="w-full p-3 border border-purple-300 rounded-lg"
+                className="w-full p-3 border border-red-300 rounded-lg"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -208,7 +208,7 @@ const Login = () => {
               <input
                 type="text"
                 placeholder="Display name (optional)"
-                className="w-full p-3 border border-purple-300 rounded-lg"
+                className="w-full p-3 border border-red-300 rounded-lg"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
               />
@@ -216,7 +216,7 @@ const Login = () => {
               <input
                 type="text"
                 placeholder="Avatar URL (optional)"
-                className="w-full p-3 border border-purple-300 rounded-lg"
+                className="w-full p-3 border border-red-300 rounded-lg"
                 value={avatarUrl}
                 onChange={(e) => setAvatarUrl(e.target.value)}
               />
@@ -226,7 +226,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-600 text-white py-3 rounded-full font-medium"
+            className="w-full bg-red-600 text-white py-3 rounded-full font-medium"
           >
             {loading ? "Please wait..." : cta}
           </button>
@@ -235,10 +235,10 @@ const Login = () => {
         {error && <p className="text-center text-red-600 mt-3">{error}</p>}
         {info && <p className="text-center text-green-600 mt-3">{info}</p>}
 
-        <p className="text-center text-sm text-purple-700 mt-6">
+        <p className="text-center text-sm text-red-700 mt-6">
           {switchText}
           <button
-            className="ml-1 text-purple-600 hover:underline"
+            className="ml-1 text-red-600 hover:underline"
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
           >
             {switchCta}
