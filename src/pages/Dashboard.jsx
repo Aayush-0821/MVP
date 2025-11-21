@@ -68,9 +68,9 @@ export default function Dashboard() {
           const totalGames = (myRes ?? []).length;
           const best = (myRes ?? []).reduce((m, r) => (r.score > m ? r.score : m), 0);
           const totalPoints = (myRes ?? []).reduce((s, r) => s + (r.score || 0), 0);
-          const lastPlayed = (myRes ?? []).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]?.created_at ?? null;
+          const lastPlayed = (myRes ?? []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]?.created_at ?? null;
           setMyStats({ totalGames, best, totalPoints, lastPlayed });
-          
+
           const { data: pData } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
           setMyProfile(pData);
         } catch (err) {
@@ -84,98 +84,122 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900 dark:text-white">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50 dark:from-black dark:via-gray-900 dark:to-gray-800 p-6 transition-colors">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#4A70A9] to-[#8FABD4] bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Track your progress and compete with others</p>
+        </div>
 
         {/* Profile Card */}
         {user && (
-          <div className="mb-10 p-8 bg-gradient-to-br from-red-600 to-indigo-600 rounded-2xl shadow-lg text-white">
-            <div className="flex items-start justify-between">
+          <div className="mb-10 p-8 bg-gradient-to-br from-[#4A70A9] to-[#8FABD4] rounded-2xl shadow-2xl text-white border border-[#8FABD4]/20">
+            <div className="flex flex-col md:flex-row items-start justify-between gap-6">
               <div className="flex items-center gap-6">
                 <img
-                  src={myProfile?.avatar_url ?? user.user_metadata?.avatar_url ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(myProfile?.display_name ?? myProfile?.full_name ?? user.email)}&background=7c3aed&color=fff&rounded=true&size=120`}
+                  src={myProfile?.avatar_url ?? user.user_metadata?.avatar_url ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(myProfile?.display_name ?? myProfile?.full_name ?? user.email)}&background=4A70A9&color=fff&rounded=true&size=120`}
                   alt="avatar"
-                  className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
                 />
                 <div>
                   <h2 className="text-3xl font-bold">{myProfile?.display_name ?? myProfile?.full_name ?? user.email}</h2>
-                  <p className="text-red-100 text-sm">{myProfile?.username ?? 'No username'}</p>
-                  <p className="text-red-100">{user.email}</p>
+                  <p className="text-white/80 text-sm mt-1">{myProfile?.username ?? 'No username'}</p>
+                  <p className="text-white/70">{user.email}</p>
                 </div>
               </div>
             </div>
-            
+
             {/* Stats Grid */}
-            <div className="mt-8 grid grid-cols-3 gap-4">
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center">
-                <div className="text-3xl font-bold">{myStats?.totalGames ?? 0}</div>
-                <div className="text-red-100 text-sm">Total Games</div>
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
+                <div className="text-4xl font-bold">{myStats?.totalGames ?? 0}</div>
+                <div className="text-white/90 text-sm mt-1 font-medium">Total Games</div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center">
-                <div className="text-3xl font-bold">{myStats?.best ?? 0}</div>
-                <div className="text-red-100 text-sm">Best Score</div>
+              <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
+                <div className="text-4xl font-bold">{myStats?.best ?? 0}</div>
+                <div className="text-white/90 text-sm mt-1 font-medium">Best Score</div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center">
-                <div className="text-3xl font-bold">{myStats?.totalPoints ?? 0}</div>
-                <div className="text-red-100 text-sm">Total Points</div>
+              <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
+                <div className="text-4xl font-bold">{myStats?.totalPoints ?? 0}</div>
+                <div className="text-white/90 text-sm mt-1 font-medium">Total Points</div>
               </div>
             </div>
           </div>
         )}
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">🏆 Leaderboard</h2>
-          {loading ? (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">Loading leaderboard...</div>
-          ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-              {leaderboard.length === 0 && <div className="p-8 text-center text-gray-500 dark:text-gray-400">No scores yet.</div>}
-              {leaderboard.map((row, idx) => (
-                <div key={idx} className={`p-4 flex justify-between items-center border-b last:border-b-0 ${idx < 3 ? 'bg-gradient-to-r from-yellow-50 to-transparent' : ''}`}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-indigo-500 text-white font-bold flex items-center justify-center">
-                      {idx + 1}
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Leaderboard */}
+          <section>
+            <h2 className="text-2xl font-bold mb-4 text-black dark:text-white flex items-center gap-2">
+              🏆 Leaderboard
+            </h2>
+            {loading ? (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+                <div className="animate-pulse text-gray-500 dark:text-gray-400">Loading leaderboard...</div>
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+                {leaderboard.length === 0 && <div className="p-8 text-center text-gray-500 dark:text-gray-400">No scores yet.</div>}
+                {leaderboard.map((row, idx) => (
+                  <div key={idx} className={`p-4 flex justify-between items-center border-b last:border-b-0 dark:border-gray-700 transition-all hover:bg-[#8FABD4]/5 dark:hover:bg-[#8FABD4]/10 ${idx < 3 ? 'bg-gradient-to-r from-[#8FABD4]/10 to-transparent dark:from-[#8FABD4]/20' : ''}`}>
+                    <div className="flex items-center gap-4">
+                      <div className={`w-10 h-10 rounded-full font-bold flex items-center justify-center shadow-md ${idx === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white' :
+                          idx === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500 text-white' :
+                            idx === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white' :
+                              'bg-gradient-to-br from-[#4A70A9] to-[#8FABD4] text-white'
+                        }`}>
+                        {idx + 1}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800 dark:text-white">{row.username ?? row.display_name ?? row.user_email ?? 'Anonymous'}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{new Date(row.latest_at).toLocaleDateString()}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-semibold text-gray-800 dark:text-white">{row.username ?? row.display_name ?? row.user_email ?? 'Anonymous'}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{new Date(row.latest_at).toLocaleDateString()}</div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-[#4A70A9] dark:text-[#8FABD4]">{row.best_score}</div>
+                      {idx === 0 && <span className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 px-2 py-1 rounded-full">👑 Leader</span>}
+                      {idx === 1 && <span className="text-xs bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">🥈 2nd</span>}
+                      {idx === 2 && <span className="text-xs bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 px-2 py-1 rounded-full">🥉 3rd</span>}
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">{row.best_score}</div>
-                    {idx === 0 && <span className="text-xs bg-yellow-200 text-yellow-800 dark:bg-gray-700 dark:text-white px-2 py-1 rounded-full">👑 Leader</span>}
-                    {idx === 1 && <span className="text-xs bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-white px-2 py-1 rounded-full">🥈 2nd</span>}
-                    {idx === 2 && <span className="text-xs bg-orange-200 text-orange-800 dark:bg-gray-700 dark:text-white px-2 py-1 rounded-full">🥉 3rd</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+                ))}
+              </div>
+            )}
+          </section>
 
-        <section>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">📊 Recent Results</h2>
-          <div className="grid gap-4">
-            {recent.length === 0 && <div className="p-8 text-center bg-white dark:bg-gray-800 rounded-lg text-gray-500 dark:text-gray-400">No results yet.</div>}
-            {recent.map(r => {
-              const profile = profilesMap.get(r.user_id) ?? profilesMap.get(r.user_email);
-              const name = profile?.username ?? profile?.display_name ?? r.user_email ?? r.user_id ?? 'anonymous';
-              return (
-                <div key={r.id} className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition flex justify-between items-center">
-                  <div>
-                    <div className="font-semibold text-gray-800 dark:text-white">{name}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{r.quiz} • {new Date(r.created_at).toLocaleString()}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-green-600">{r.score}{r.max_score ? ` / ${r.max_score}` : ''}</div>
-                    {r.max_score && <div className="text-xs text-gray-500 dark:text-gray-400">{Math.round((r.score / r.max_score) * 100)}% correct</div>}
-                  </div>
+          {/* Recent Results */}
+          <section>
+            <h2 className="text-2xl font-bold mb-4 text-black dark:text-white flex items-center gap-2">
+              📊 Recent Results
+            </h2>
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+              {recent.length === 0 && (
+                <div className="p-8 text-center bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 text-gray-500 dark:text-gray-400">
+                  No results yet.
                 </div>
-              );
-            })}
-          </div>
-        </section>
+              )}
+              {recent.map(r => {
+                const profile = profilesMap.get(r.user_id) ?? profilesMap.get(r.user_email);
+                const name = profile?.username ?? profile?.display_name ?? r.user_email ?? r.user_id ?? 'anonymous';
+                return (
+                  <div key={r.id} className="p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all flex justify-between items-center border border-gray-200/50 dark:border-gray-700/50 hover:border-[#8FABD4]/50 dark:hover:border-[#8FABD4]/50">
+                    <div>
+                      <div className="font-semibold text-gray-800 dark:text-white">{name}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{r.quiz} • {new Date(r.created_at).toLocaleString()}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-[#4A70A9] dark:text-[#8FABD4]">{r.score}{r.max_score ? ` / ${r.max_score}` : ''}</div>
+                      {r.max_score && <div className="text-xs text-gray-500 dark:text-gray-400">{Math.round((r.score / r.max_score) * 100)}% correct</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

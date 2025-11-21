@@ -11,6 +11,10 @@ import About from "./pages/About";
 import Community from "./pages/Community";
 import Layout from "./components/Layout";
 import Quiz2 from "./pages/Quiz2";
+import CaesarCipher from "./pages/CaesarCipher";
+import RSAGame from "./pages/RSAGame";
+import HashGame from "./pages/HashGame";
+import SteganographyGame from "./pages/SteganographyGame";
 
 function App() {
   return (
@@ -28,6 +32,10 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/community" element={<Community />} />
           <Route path="/about" element={<About />} />
+          <Route path="/caesar-cipher" element={<CaesarCipher />} />
+          <Route path="/rsa-game" element={<RSAGame />} />
+          <Route path="/hash-game" element={<HashGame />} />
+          <Route path="/steganography" element={<SteganographyGame />} />
         </Route>
       </Routes>
     </BrowserRouter>
