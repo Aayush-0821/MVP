@@ -51,8 +51,7 @@ const DEFAULT_QUESTIONS = [
   },
 ];
 
-// --- Main App Component ---
-export default function App() {
+export default function Quiz() {
   const [questions, setQuestions] = useState(DEFAULT_QUESTIONS);
 
   // --- State ---
@@ -61,7 +60,7 @@ export default function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [showScore, setShowScore] = useState(false);
-  const { user } = useAuth();
+  const { user, initializing } = useAuth();
 
   // --- Leaderboard State ---
   const [leaderboard, setLeaderboard] = useState([]);
@@ -201,7 +200,43 @@ export default function App() {
     };
 
     saveResult();
-  }, [showScore]);
+  }, [showScore, user, score, questions.length]);
+
+  if (initializing) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-gray-200 dark:border-gray-700">
+          <div className="text-6xl mb-6">🔒</div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Login Required</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg">
+            Please log in or sign up to take the quiz and track your progress on the leaderboard.
+          </p>
+          <div className="flex flex-col gap-3">
+            <a
+              href="/login"
+              className="inline-block w-full bg-gradient-to-r from-pink-600 to-rose-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200"
+            >
+              Log In
+            </a>
+            <a
+              href="/login?mode=signup"
+              className="inline-block w-full bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 border-2 border-pink-600 dark:border-pink-400 font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200"
+            >
+              Sign Up
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="font-sans min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white">
@@ -303,9 +338,9 @@ export default function App() {
                 <div key={idx} className={`p-4 flex justify-between items-center border-b last:border-b-0 dark:border-gray-700 transition-all hover:bg-pink-50 dark:hover:bg-pink-900/10 ${idx < 3 ? 'bg-gradient-to-r from-pink-50 to-transparent dark:from-pink-900/20' : ''}`}>
                   <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full font-bold flex items-center justify-center shadow-md ${idx === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white' :
-                        idx === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500 text-white' :
-                          idx === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white' :
-                            'bg-gradient-to-br from-pink-400 to-pink-600 text-white'
+                      idx === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500 text-white' :
+                        idx === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white' :
+                          'bg-gradient-to-br from-pink-400 to-pink-600 text-white'
                       }`}>
                       {idx + 1}
                     </div>

@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthProvider';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, initializing } = useAuth();
   const [recent, setRecent] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
   const [profilesMap, setProfilesMap] = useState(new Map());
@@ -83,6 +83,42 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+  if (initializing) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-gray-200 dark:border-gray-700">
+          <div className="text-6xl mb-6">🔒</div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Access Denied</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg">
+            Please log in to view your dashboard and track your progress.
+          </p>
+          <div className="flex flex-col gap-3">
+            <a
+              href="/login"
+              className="inline-block w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200"
+            >
+              Log In
+            </a>
+            <a
+              href="/login?mode=signup"
+              className="inline-block w-full bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 border-2 border-blue-600 dark:border-blue-400 font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200"
+            >
+              Sign Up
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50 dark:from-black dark:via-gray-900 dark:to-gray-800 p-6 transition-colors">
       <div className="max-w-6xl mx-auto">
@@ -95,40 +131,38 @@ export default function Dashboard() {
         </div>
 
         {/* Profile Card */}
-        {user && (
-          <div className="mb-10 p-8 bg-gradient-to-br from-[#4A70A9] to-[#8FABD4] rounded-2xl shadow-2xl text-white border border-[#8FABD4]/20">
-            <div className="flex flex-col md:flex-row items-start justify-between gap-6">
-              <div className="flex items-center gap-6">
-                <img
-                  src={myProfile?.avatar_url ?? user.user_metadata?.avatar_url ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(myProfile?.display_name ?? myProfile?.full_name ?? user.email)}&background=4A70A9&color=fff&rounded=true&size=120`}
-                  alt="avatar"
-                  className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
-                />
-                <div>
-                  <h2 className="text-3xl font-bold">{myProfile?.display_name ?? myProfile?.full_name ?? user.email}</h2>
-                  <p className="text-white/80 text-sm mt-1">{myProfile?.username ?? 'No username'}</p>
-                  <p className="text-white/70">{user.email}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
-                <div className="text-4xl font-bold">{myStats?.totalGames ?? 0}</div>
-                <div className="text-white/90 text-sm mt-1 font-medium">Total Games</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
-                <div className="text-4xl font-bold">{myStats?.best ?? 0}</div>
-                <div className="text-white/90 text-sm mt-1 font-medium">Best Score</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
-                <div className="text-4xl font-bold">{myStats?.totalPoints ?? 0}</div>
-                <div className="text-white/90 text-sm mt-1 font-medium">Total Points</div>
+        <div className="mb-10 p-8 bg-gradient-to-br from-[#4A70A9] to-[#8FABD4] rounded-2xl shadow-2xl text-white border border-[#8FABD4]/20">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-6">
+            <div className="flex items-center gap-6">
+              <img
+                src={myProfile?.avatar_url ?? user.user_metadata?.avatar_url ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(myProfile?.display_name ?? myProfile?.full_name ?? user.email)}&background=4A70A9&color=fff&rounded=true&size=120`}
+                alt="avatar"
+                className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+              />
+              <div>
+                <h2 className="text-3xl font-bold">{myProfile?.display_name ?? myProfile?.full_name ?? user.email}</h2>
+                <p className="text-white/80 text-sm mt-1">{myProfile?.username ?? 'No username'}</p>
+                <p className="text-white/70">{user.email}</p>
               </div>
             </div>
           </div>
-        )}
+
+          {/* Stats Grid */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
+              <div className="text-4xl font-bold">{myStats?.totalGames ?? 0}</div>
+              <div className="text-white/90 text-sm mt-1 font-medium">Total Games</div>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
+              <div className="text-4xl font-bold">{myStats?.best ?? 0}</div>
+              <div className="text-white/90 text-sm mt-1 font-medium">Best Score</div>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl text-center border border-white/30 hover:bg-white/30 transition-all">
+              <div className="text-4xl font-bold">{myStats?.totalPoints ?? 0}</div>
+              <div className="text-white/90 text-sm mt-1 font-medium">Total Points</div>
+            </div>
+          </div>
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Leaderboard */}
@@ -147,9 +181,9 @@ export default function Dashboard() {
                   <div key={idx} className={`p-4 flex justify-between items-center border-b last:border-b-0 dark:border-gray-700 transition-all hover:bg-[#8FABD4]/5 dark:hover:bg-[#8FABD4]/10 ${idx < 3 ? 'bg-gradient-to-r from-[#8FABD4]/10 to-transparent dark:from-[#8FABD4]/20' : ''}`}>
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-full font-bold flex items-center justify-center shadow-md ${idx === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white' :
-                          idx === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500 text-white' :
-                            idx === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white' :
-                              'bg-gradient-to-br from-[#4A70A9] to-[#8FABD4] text-white'
+                        idx === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500 text-white' :
+                          idx === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white' :
+                            'bg-gradient-to-br from-[#4A70A9] to-[#8FABD4] text-white'
                         }`}>
                         {idx + 1}
                       </div>
