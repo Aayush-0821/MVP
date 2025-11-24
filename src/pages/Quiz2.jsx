@@ -96,7 +96,7 @@ export default function PigpenCipherGame() {
             setFeedback({ show: false, message: '', type: 'wrong' });
             loadNextQuestion();
         }, 3000);
-    }, [loadNextQuestion]); // Add loadNextQuestion as dependency
+    }, [loadNextQuestion]);
 
     const startGame = (diff) => {
         setDifficulty(diff);
@@ -226,6 +226,7 @@ export default function PigpenCipherGame() {
         };
         saveResult();
     }, [screen]);
+
     const renderKeyCell = (letter, pos, hasDot = false) => {
         const borderClasses = {
             1: 'border-r-0 border-b-0', 2: 'border-b-0', 3: 'border-l-0 border-b-0',
@@ -233,253 +234,247 @@ export default function PigpenCipherGame() {
             7: 'border-r-0 border-t-0', 8: 'border-t-0', 9: 'border-l-0 border-t-0',
         };
         return (
-            <div className={`w-20 h-20 sm:w-24 sm:h-24 border-4 border-gray-800 dark:border-gray-600 flex items-center justify-center text-xl sm:text-2xl font-bold bg-white dark:bg-gray-700 text-gray-800 dark:text-white relative ${borderClasses[pos]}`}>
+            <div className={`w-16 h-16 sm:w-20 sm:h-20 border-4 border-gray-800 dark:border-gray-600 flex items-center justify-center text-xl sm:text-2xl font-bold bg-white dark:bg-gray-700 text-gray-800 dark:text-white relative ${borderClasses[pos]}`}>
                 {letter}
-                {hasDot && <span className="absolute text-5xl text-red-600" style={{ transform: 'translate(0, -3px)' }}>•</span>}
+                {hasDot && <span className="absolute text-4xl text-red-600" style={{ transform: 'translate(0, -3px)' }}>•</span>}
             </div>
         );
     };
 
     return (
-        <div className="bg-gray-900 min-h-screen p-5 font-sans text-white">
-            <div className="max-w-3xl mx-auto">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
+            <div className="max-w-4xl mx-auto">
 
                 {/* HEADER */}
-                <div className="text-center text-white mb-8">
-                    <h1 className="text-3xl md:text-4xl font-bold mb-2">🔐 Pig Pen Cipher Game</h1>
-                    <p>Decode the symbols and learn the ancient Pigpen cipher!</p>
+                <div className="text-center mb-8">
+                    <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        🔐 Pig Pen Cipher
+                    </h1>
+                    <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">
+                        Decode the symbols and learn the ancient Freemason's cipher!
+                    </p>
                 </div>
 
-                {/* ================================ */}
-                {/* SCREEN 1: CHOOSE DIFFICULTY      */}
-                {/* ================================ */}
-                {screen === 'difficulty' && (
-                    <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
-                        <h2 className="text-2xl font-bold mb-8 text-white">Choose Your Difficulty Level</h2>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button
-                                className="w-full sm:w-auto bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white py-5 px-8 rounded-lg text-lg font-bold cursor-pointer transition-all duration-300 shadow-md hover:bg-white/40 hover:scale-105 hover:shadow-lg"
-                                onClick={() => startGame('easy')}
-                            >
-                                <div>EASY</div>
-                                <small>3 letters • 45 seconds</small>
-                            </button>
-                            <button
-                                className="w-full sm:w-auto bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white py-5 px-8 rounded-lg text-lg font-bold cursor-pointer transition-all duration-300 shadow-md hover:bg-white/40 hover:scale-105 hover:shadow-lg"
-                                onClick={() => startGame('medium')}
-                            >
-                                <div>MEDIUM</div>
-                                <small>5 letters • 35 seconds</small>
-                            </button>
-                            <button
-                                className="w-full sm:w-auto bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white py-5 px-8 rounded-lg text-lg font-bold cursor-pointer transition-all duration-300 shadow-md hover:bg-white/40 hover:scale-105 hover:shadow-lg"
-                                onClick={() => startGame('hard')}
-                            >
-                                <div>HARD</div>
-                                <small>8 letters • 25 seconds</small>
-                            </button>
+                {/* INFO BANNER */}
+                <div className="bg-white dark:bg-gray-800 border-l-4 border-indigo-500 p-6 rounded-lg mb-8 shadow-md">
+                    <div className="flex items-start gap-3">
+                        <span className="text-2xl">💡</span>
+                        <div>
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-2">How it works</h3>
+                            <p className="text-gray-700 dark:text-gray-300">
+                                The alphabet is drawn in grids. Each letter is replaced by the lines that surround it. Dots are used to distinguish between grids.
+                            </p>
                         </div>
                     </div>
-                )}
+                </div>
 
-                {/* ================================ */}
-                {/* SCREEN 2: GAME PLAY              */}
-                {/* ================================ */}
-                {screen === 'game' && (
-                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl">
+                {/* GAME CARD */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden p-8">
 
-                        {/* Game Info */}
-                        <div className="flex justify-around flex-wrap gap-3 mb-5">
-                            <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">ROUND</div>
-                                <div className="text-3xl font-bold text-white">{currentRound}</div>
-                            </div>
-                            <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">SCORE</div>
-                                <div className="text-3xl font-bold text-white">{score}</div>
-                            </div>
-                            <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">STREAK</div>
-                                <div className="text-3xl font-bold text-white">{streak}</div>
-                            </div>
-                            <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg text-center min-w-[100px] flex-1 shadow-md">
-                                <div className="text-sm text-red-100 font-bold uppercase tracking-wider">LEVEL</div>
-                                <div className="text-3xl font-bold text-white">{difficulty.toUpperCase()}</div>
-                            </div>
-                        </div>
-
-                        {/* Timer */}
-                        <div className={`bg-red-500 text-white p-5 rounded-lg text-center text-4xl font-bold mb-5 transition-opacity shadow-lg ${timeLeft <= 10 && timeLeft > 0 ? 'animate-pulse' : ''}`}>
-                            {timeLeft}s
-                        </div>
-
-                        {/* Cipher Display */}
-                        <div className="bg-white/90 dark:bg-gray-800 p-10 rounded-lg text-center mb-5 min-h-[100px] flex items-center justify-center shadow-inner">
-                            <div className="text-4xl font-bold tracking-widest text-gray-800 dark:text-white" style={{ fontFamily: 'monospace' }}>
-                                {cipherSymbols}
-                            </div>
-                        </div>
-
-                        {/* Feedback Message */}
-                        {feedback.show && (
-                            <div className={`p-5 rounded-lg text-center font-bold text-lg mb-5 shadow-md
-                ${feedback.type === 'correct' ? 'bg-green-100 text-green-800 border-2 border-green-200' : 'bg-red-100 text-red-800 border-2 border-red-200'}
-              `}>
-                                {feedback.message}
-                            </div>
-                        )}
-
-                        {/* Input Area */}
-                        <div className="mb-5">
-                            <input
-                                type="text"
-                                className="w-full p-4 text-xl border-2 border-gray-300 dark:border-gray-600 rounded-lg mb-4 box-border focus:outline-none focus:border-red-600 disabled:bg-gray-100 dark:disabled:bg-gray-700 text-gray-900 dark:text-white"
-                                placeholder="Type your answer here..."
-                                value={userInput}
-                                onChange={(e) => setUserInput(e.target.value)}
-                                onKeyDown={handleInputKeydown}
-                                disabled={inputDisabled}
-                                autoFocus
-                            />
-                            <div className="flex flex-col sm:flex-row gap-3">
+                    {/* SCREEN 1: CHOOSE DIFFICULTY */}
+                    {screen === 'difficulty' && (
+                        <div className="text-center">
+                            <h2 className="text-2xl font-bold mb-8 text-gray-900 dark:text-white">Choose Your Difficulty Level</h2>
+                            <div className="grid md:grid-cols-3 gap-4">
                                 <button
-                                    className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600 hover:scale-105 active:scale-95 disabled:hover:scale-100"
-                                    onClick={submitAnswer}
+                                    className="p-6 rounded-xl border-2 border-green-200 bg-green-50 hover:bg-green-100 hover:border-green-400 transition-all group"
+                                    onClick={() => startGame('easy')}
+                                >
+                                    <div className="text-xl font-bold text-green-700 mb-2">EASY</div>
+                                    <div className="text-sm text-green-600">3 letters • 45s</div>
+                                </button>
+                                <button
+                                    className="p-6 rounded-xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-400 transition-all group"
+                                    onClick={() => startGame('medium')}
+                                >
+                                    <div className="text-xl font-bold text-blue-700 mb-2">MEDIUM</div>
+                                    <div className="text-sm text-blue-600">5 letters • 35s</div>
+                                </button>
+                                <button
+                                    className="p-6 rounded-xl border-2 border-red-200 bg-red-50 hover:bg-red-100 hover:border-red-400 transition-all group"
+                                    onClick={() => startGame('hard')}
+                                >
+                                    <div className="text-xl font-bold text-red-700 mb-2">HARD</div>
+                                    <div className="text-sm text-red-600">8 letters • 25s</div>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SCREEN 2: GAME PLAY */}
+                    {screen === 'game' && (
+                        <div>
+                            {/* Stats */}
+                            <div className="grid grid-cols-4 gap-4 mb-8">
+                                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <div className="text-xs text-gray-500 uppercase">Round</div>
+                                    <div className="text-xl font-bold text-gray-900 dark:text-white">{currentRound}/{MAX_ROUNDS}</div>
+                                </div>
+                                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <div className="text-xs text-gray-500 uppercase">Score</div>
+                                    <div className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{score}</div>
+                                </div>
+                                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <div className="text-xs text-gray-500 uppercase">Streak</div>
+                                    <div className="text-xl font-bold text-orange-500">{streak}</div>
+                                </div>
+                                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <div className="text-xs text-gray-500 uppercase">Time</div>
+                                    <div className={`text-xl font-bold ${timeLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-gray-900 dark:text-white'}`}>
+                                        {timeLeft}s
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Cipher Display */}
+                            <div className="bg-gray-100 dark:bg-gray-900 p-12 rounded-xl text-center mb-8 border-2 border-gray-200 dark:border-gray-700">
+                                <div className="text-5xl font-bold tracking-widest text-gray-800 dark:text-white font-mono">
+                                    {cipherSymbols}
+                                </div>
+                            </div>
+
+                            {/* Feedback */}
+                            {feedback.show && (
+                                <div className={`p-4 rounded-lg text-center font-bold mb-6 ${feedback.type === 'correct'
+                                        ? 'bg-green-100 text-green-800 border border-green-200'
+                                        : 'bg-red-100 text-red-800 border border-red-200'
+                                    }`}>
+                                    {feedback.message}
+                                </div>
+                            )}
+
+                            {/* Input */}
+                            <div className="flex flex-col gap-4">
+                                <input
+                                    type="text"
+                                    className="w-full p-4 text-xl border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:bg-gray-700 dark:text-white transition-all text-center uppercase tracking-widest"
+                                    placeholder="TYPE ANSWER..."
+                                    value={userInput}
+                                    onChange={(e) => setUserInput(e.target.value)}
+                                    onKeyDown={handleInputKeydown}
                                     disabled={inputDisabled}
-                                >
-                                    Submit Answer
-                                </button>
-                                <button
-                                    className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white/30 backdrop-blur-sm text-white border border-white/50 hover:bg-white/50 active:scale-95 disabled:hover:scale-100"
-                                    onClick={skipQuestion}
-                                    disabled={inputDisabled}
-                                >
-                                    Skip (-10 pts)
-                                </button>
-                                <button
-                                    className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white/30 backdrop-blur-sm text-white border border-white/50 hover:bg-white/50 active:scale-95 disabled:hover:scale-100"
-                                    onClick={toggleKey}
-                                >
-                                    Show Key
-                                </button>
+                                    autoFocus
+                                />
+                                <div className="grid grid-cols-3 gap-3">
+                                    <button
+                                        className="py-3 px-6 rounded-lg font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-md disabled:opacity-50"
+                                        onClick={submitAnswer}
+                                        disabled={inputDisabled}
+                                    >
+                                        Submit
+                                    </button>
+                                    <button
+                                        className="py-3 px-6 rounded-lg font-bold bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 transition disabled:opacity-50"
+                                        onClick={skipQuestion}
+                                        disabled={inputDisabled}
+                                    >
+                                        Skip
+                                    </button>
+                                    <button
+                                        className="py-3 px-6 rounded-lg font-bold border-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-800 dark:text-indigo-400 transition"
+                                        onClick={toggleKey}
+                                    >
+                                        Show Key
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                    )}
 
-                        {/* Stats */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-red-100 opacity-90">Total Rounds</div>
-                                <div className="text-3xl font-bold text-white mt-1">{currentRound}</div>
-                            </div>
-                            <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-red-100 opacity-90">Correct</div>
-                                <div className="text-3xl font-bold text-white mt-1">{correctCount}</div>
-                            </div>
-                            <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-red-100 opacity-90">Wrong</div>
-                                <div className="text-3xl font-bold text-white mt-1">{wrongCount}</div>
-                            </div>
-                            <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                <div className="text-sm text-red-100 opacity-90">Accuracy</div>
-                                <div className="text-3xl font-bold text-white mt-1">{accuracy}%</div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                    {/* SCREEN 3: KEY */}
+                    {screen === 'key' && (
+                        <div className="text-center">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Pigpen Cipher Key</h3>
 
-                {/* ================================ */}
-                {/* SCREEN 3: PIGPEN KEY             */}
-                {/* ================================ */}
-                {screen === 'key' && (
-                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
-                        <h3 className="text-2xl font-bold text-white mb-5">Pigpen Cipher Key</h3>
+                            <div className="inline-block bg-gray-100 dark:bg-gray-700 p-8 rounded-xl mb-6">
+                                <div className="mb-8">
+                                    <h4 className="text-sm font-bold text-gray-500 uppercase mb-4">Grid 1 (A-I)</h4>
+                                    <div className="inline-grid grid-cols-3 gap-0 border-4 border-gray-800 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                        {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'].map((l, i) => renderKeyCell(l, i + 1))}
+                                    </div>
+                                </div>
 
-                        <div className="bg-gray-100 dark:bg-gray-800 p-4 sm:p-8 rounded-lg inline-block text-gray-800 dark:text-white">
-                            <h4 className="text-lg font-semibold">Grid 1: Letters A-I (no dots)</h4>
-                            <div className="inline-grid grid-cols-3 gap-0 mb-8 mt-4">
-                                {renderKeyCell('A', 1)}
-                                {renderKeyCell('B', 2)}
-                                {renderKeyCell('C', 3)}
-                                {renderKeyCell('D', 4)}
-                                {renderKeyCell('E', 5)}
-                                {renderKeyCell('F', 6)}
-                                {renderKeyCell('G', 7)}
-                                {renderKeyCell('H', 8)}
-                                {renderKeyCell('I', 9)}
-                            </div>
-
-                            <h4 className="text-lg font-semibold">Grid 2: Letters J-R (with dots)</h4>
-                            <div className="inline-grid grid-cols-3 gap-0 mb-8 mt-4">
-                                {renderKeyCell('J', 1, true)}
-                                {renderKeyCell('K', 2, true)}
-                                {renderKeyCell('L', 3, true)}
-                                {renderKeyCell('M', 4, true)}
-                                {renderKeyCell('N', 5, true)}
-                                {renderKeyCell('O', 6, true)}
-                                {renderKeyCell('P', 7, true)}
-                                {renderKeyCell('Q', 8, true)}
-                                {renderKeyCell('R', 9, true)}
-                            </div>
+                                <div className="mb-8">
+                                    <h4 className="text-sm font-bold text-gray-500 uppercase mb-4">Grid 2 (J-R)</h4>
+                                    <div className="inline-grid grid-cols-3 gap-0 border-4 border-gray-800 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                        {['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'].map((l, i) => renderKeyCell(l, i + 1, true))}
+                                    </div>
+                                </div>
 
                                 <div>
-                                <h4 className="text-lg font-semibold">Letters S-Z: X shapes</h4>
-                                <p className="text-gray-600 dark:text-gray-300">S, T, U, V = X shapes without dots</p>
-                                <p className="text-gray-600 dark:text-gray-300">W, X, Y, Z = X shapes with dots</p>
-                                <div className='flex gap-4 justify-center text-3xl font-mono mt-4'>
-                                    <span>S:◁</span>
-                                    <span>T:▷</span>
-                                    <span>U:△</span>
-                                    <span>V:▽</span>
+                                    <h4 className="text-sm font-bold text-gray-500 uppercase mb-4">X Shapes (S-Z)</h4>
+                                    <div className="flex gap-8 justify-center text-3xl font-mono text-gray-800 dark:text-white">
+                                        <div className="flex flex-col gap-2"><span>S: ◁</span><span>T: ▷</span></div>
+                                        <div className="flex flex-col gap-2"><span>U: △</span><span>V: ▽</span></div>
+                                        <div className="flex flex-col gap-2"><span>W: ◁•</span><span>X: ▷•</span></div>
+                                        <div className="flex flex-col gap-2"><span>Y: △•</span><span>Z: ▽•</span></div>
+                                    </div>
                                 </div>
                             </div>
+
+                            <button
+                                className="w-full py-3 rounded-lg font-bold bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 transition"
+                                onClick={toggleKey}
+                            >
+                                Close Key
+                            </button>
                         </div>
+                    )}
 
-                        <button
-                            className="flex-1 py-3 px-5 rounded-xl text-base font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white/30 backdrop-blur-sm text-white border border-white/50 hover:bg-white/50 active:scale-95 disabled:hover:scale-100 mt-5"
-                            onClick={toggleKey}
-                        >
-                            Hide Key
-                        </button>
-                    </div>
-                )}
+                    {/* SCREEN 4: GAME OVER */}
+                    {screen === 'gameover' && (
+                        <div className="text-center py-8">
+                            <div className="text-6xl mb-4">🎉</div>
+                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Game Complete!</h2>
 
-                {/* ================================ */}
-                {/* SCREEN 4: GAME OVER              */}
-                {/* ================================ */}
-                {screen === 'gameover' && (
-                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-5 shadow-2xl text-center">
-                        <h2 className="text-4xl font-bold text-white mb-6">🎉 Game Complete!</h2>
-
-                        <div className="bg-black/10 p-6 rounded-lg mb-8">
-                            <h3 className="text-xl font-semibold text-white mb-4">Your Final Results</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-red-100 opacity-90">Final Score</div>
-                                    <div className="text-3xl font-bold text-white mt-1">{score}</div>
+                            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mb-8">
+                                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl">
+                                    <div className="text-sm text-indigo-600 dark:text-indigo-400 font-bold uppercase">Final Score</div>
+                                    <div className="text-3xl font-bold text-gray-900 dark:text-white">{score}</div>
                                 </div>
-                                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-red-100 opacity-90">Best Streak</div>
-                                    <div className="text-3xl font-bold text-white mt-1">{bestStreak}</div>
+                                <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-xl">
+                                    <div className="text-sm text-orange-600 dark:text-orange-400 font-bold uppercase">Best Streak</div>
+                                    <div className="text-3xl font-bold text-gray-900 dark:text-white">{bestStreak}</div>
                                 </div>
-                                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-red-100 opacity-90">Correct</div>
-                                    <div className="text-3xl font-bold text-white mt-1">{correctCount}</div>
+                                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl">
+                                    <div className="text-sm text-green-600 dark:text-green-400 font-bold uppercase">Correct</div>
+                                    <div className="text-3xl font-bold text-gray-900 dark:text-white">{correctCount}</div>
                                 </div>
-                                <div className="bg-white/20 backdrop-blur-sm p-5 rounded-lg text-center shadow-md">
-                                    <div className="text-sm text-red-100 opacity-90">Accuracy</div>
-                                    <div className="text-3xl font-bold text-white mt-1">{accuracy}%</div>
+                                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl">
+                                    <div className="text-sm text-blue-600 dark:text-blue-400 font-bold uppercase">Accuracy</div>
+                                    <div className="text-3xl font-bold text-gray-900 dark:text-white">{accuracy}%</div>
                                 </div>
                             </div>
-                        </div>
 
-                        <button
-                            className="py-4 px-10 rounded-xl text-lg font-bold cursor-pointer min-w-[120px] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600 hover:scale-105 active:scale-95 disabled:hover:scale-100"
-                            onClick={restartGame}
-                        >
-                            Play Again
-                        </button>
+                            <button
+                                className="px-8 py-4 rounded-xl font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-lg hover:scale-105"
+                                onClick={restartGame}
+                            >
+                                Play Again
+                            </button>
+                        </div>
+                    )}
+
+                </div>
+
+                {/* EDUCATIONAL INFO */}
+                <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">🎓 About Pig Pen Cipher</h2>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg">
+                            <h3 className="font-bold text-indigo-800 dark:text-indigo-300 mb-2">History</h3>
+                            <p className="text-sm text-gray-700 dark:text-gray-300">
+                                The Pigpen cipher (also known as the masonic cipher) is a geometric simple substitution cipher, which exchanges letters for symbols which are fragments of a grid. It was famously used by the Freemasons in the 18th century to keep their records private.
+                            </p>
+                        </div>
+                        <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                            <h3 className="font-bold text-purple-800 dark:text-purple-300 mb-2">Substitution Ciphers</h3>
+                            <p className="text-sm text-gray-700 dark:text-gray-300">
+                                This is a classic example of a monoalphabetic substitution cipher, where each letter is replaced by a corresponding symbol. While easy to learn, it is not secure against modern cryptanalysis methods like frequency analysis.
+                            </p>
+                        </div>
                     </div>
-                )}
+                </div>
 
             </div>
         </div>

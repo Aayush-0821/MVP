@@ -54,7 +54,20 @@ const DEFAULT_QUESTIONS = [
 // --- Main App Component ---
 export default function App() {
   const [questions, setQuestions] = useState(DEFAULT_QUESTIONS);
-  
+
+  // --- State ---
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+  const [showScore, setShowScore] = useState(false);
+  const { user } = useAuth();
+
+  // --- Leaderboard State ---
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(true);
+
+  // Load Questions
   useEffect(() => {
     const loadQuestions = async () => {
       try {
@@ -79,22 +92,31 @@ export default function App() {
     loadQuestions();
   }, []);
 
-  // --- Main App Component ---
+  // Load Leaderboard
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const { data: lbData, error: lbError } = await supabase
+          .from('leaderboard')
+          .select('*')
+          .limit(10);
 
-// --- Main App Component ---
-  // --- State ---
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isAnswerChecked, setIsAnswerChecked] = useState(false);
-  const [showScore, setShowScore] = useState(false);
-  const { user } = useAuth();
+        if (lbError) {
+          console.error('Failed to fetch leaderboard:', lbError.message);
+        } else {
+          setLeaderboard(lbData ?? []);
+        }
+      } catch (err) {
+        console.error('Error fetching leaderboard:', err);
+      } finally {
+        setLoadingLeaderboard(false);
+      }
+    };
+    fetchLeaderboard();
+  }, []);
 
   // --- Event Handlers ---
 
-  /**
-   * Handles selecting an answer
-   */
   const handleAnswerSelect = (answer) => {
     if (isAnswerChecked) return; // Prevent changing answer
 
@@ -106,9 +128,6 @@ export default function App() {
     }
   };
 
-  /**
-   * Moves to the next question or shows the score
-   */
   const handleNextButton = () => {
     // Reset answer state
     setSelectedAnswer(null);
@@ -123,9 +142,6 @@ export default function App() {
     }
   };
 
-  /**
-   * Resets the quiz to play again
-   */
   const handlePlayAgain = () => {
     setCurrentQuestionIndex(0);
     setScore(0);
@@ -136,9 +152,6 @@ export default function App() {
 
   // --- Helper Functions & Variables ---
 
-  /**
-   * Gets the appropriate button style based on answer state
-   */
   const getButtonClass = (answer) => {
     const baseClass = "p-4 rounded-lg border-2 text-left w-full transition-all duration-200 font-medium text-gray-800 dark:text-white";
 
@@ -166,8 +179,6 @@ export default function App() {
   const progressPercentage = showScore ? 100 : (currentQuestionIndex / questions.length) * 100;
   const answerIcons = ["🌱", "📘", "🧠", "👑"];
 
-  // --- Render ---
-
   // Save result to Supabase when quiz finishes
   useEffect(() => {
     if (!showScore) return;
@@ -191,27 +202,28 @@ export default function App() {
 
     saveResult();
   }, [showScore]);
+
   return (
     <div className="font-sans min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white">
-      
+
       {/* --- Main Quiz Container --- */}
-      <main className="flex justify-center items-center py-10 md:py-20 px-4">
+      <main className="flex flex-col items-center py-10 md:py-20 px-4 gap-8">
         <div className="app w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-10 dark:bg-gray-800 dark:text-white">
-          
+
           {showScore ? (
             // --- Score View ---
             <div className="text-center fade-in">
               <h1 className="text-3xl font-bold mb-4">🎉 You scored {score} out of {questions.length}!</h1>
-              
+
               {/* Progress Bar */}
               <div className="w-full bg-gray-200 rounded-full h-2.5 my-6">
-                <div 
-                  className="bg-pink-500 h-2.5 rounded-full transition-all duration-500" 
+                <div
+                  className="bg-pink-500 h-2.5 rounded-full transition-all duration-500"
                   style={{ width: `100%` }}
                 ></div>
               </div>
-              
-              <button 
+
+              <button
                 onClick={handlePlayAgain}
                 className="w-full bg-pink-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-pink-700 transition-all text-lg shadow-lg"
               >
@@ -226,11 +238,11 @@ export default function App() {
                 Test Your Encryption <span className="text-pink-500">Knowledge</span>
               </h1>
               <p className="text-gray-600 mt-2 mb-4">Level up your encryption knowledge!</p>
-              
+
               {/* Progress Bar */}
               <div className="w-full bg-gray-200 rounded-full h-2.5 my-6">
-                <div 
-                  className="bg-pink-500 h-2.5 rounded-full transition-all duration-500" 
+                <div
+                  className="bg-pink-500 h-2.5 rounded-full transition-all duration-500"
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
@@ -240,7 +252,7 @@ export default function App() {
                 <h2 id="question" className="text-xl md:text-2xl font-semibold my-6 min-h-[4rem]">
                   {currentQuestionIndex + 1}. {currentQuestion.question}
                 </h2>
-                
+
                 {/* Answers */}
                 <div id="answer-buttons" className="grid grid-cols-1 gap-4">
                   {currentQuestion.answers.map((answer, index) => (
@@ -255,10 +267,10 @@ export default function App() {
                     </button>
                   ))}
                 </div>
-                
+
                 {/* Next Button */}
                 {isAnswerChecked && (
-                  <button 
+                  <button
                     id="next-btn"
                     onClick={handleNextButton}
                     className="w-full bg-pink-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-pink-700 transition-all mt-8 text-lg shadow-lg animate-pulse"
@@ -267,6 +279,53 @@ export default function App() {
                   </button>
                 )}
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* --- Leaderboard Section --- */}
+        <div className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200/50 dark:border-gray-700/50">
+          <h2 className="text-2xl font-bold mb-6 text-black dark:text-white flex items-center gap-2">
+            🏆 Leaderboard
+          </h2>
+          {loadingLeaderboard ? (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400 animate-pulse">
+              Loading leaderboard...
+            </div>
+          ) : (
+            <div className="overflow-hidden">
+              {leaderboard.length === 0 && (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  No scores yet. Be the first!
+                </div>
+              )}
+              {leaderboard.map((row, idx) => (
+                <div key={idx} className={`p-4 flex justify-between items-center border-b last:border-b-0 dark:border-gray-700 transition-all hover:bg-pink-50 dark:hover:bg-pink-900/10 ${idx < 3 ? 'bg-gradient-to-r from-pink-50 to-transparent dark:from-pink-900/20' : ''}`}>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full font-bold flex items-center justify-center shadow-md ${idx === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white' :
+                        idx === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500 text-white' :
+                          idx === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white' :
+                            'bg-gradient-to-br from-pink-400 to-pink-600 text-white'
+                      }`}>
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-800 dark:text-white">
+                        {row.username ?? row.display_name ?? row.user_email ?? 'Anonymous'}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(row.latest_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">{row.best_score}</div>
+                    {idx === 0 && <span className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 px-2 py-1 rounded-full">👑 Leader</span>}
+                    {idx === 1 && <span className="text-xs bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">🥈 2nd</span>}
+                    {idx === 2 && <span className="text-xs bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 px-2 py-1 rounded-full">🥉 3rd</span>}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

@@ -10,31 +10,31 @@ const Games = () => {
   const games = [
     {
       id: 1,
-      title: "CYBER DEFENSE PROTOCOL",
-      subtitle: "Diffie-Hellman Key Exchange",
-      description: "Master the art of secure key exchange. Calculate public keys and shared secrets in this interactive simulation.",
+      title: "Cyber Security Basics",
+      subtitle: "Defense Protocols & Best Practices",
+      description: "Test your knowledge on essential cyber security concepts like Phishing, Strong Passwords, and 2FA.",
       image: diffieHellman,
       route: "/quiz1",
-      difficulty: "Intermediate",
-      duration: "15-20 min",
+      difficulty: "Beginner",
+      duration: "5-10 min",
       tutorial: {
-        overview: "Learn how two parties can establish a shared secret key over an insecure channel without ever transmitting the key itself.",
+        overview: "Cyber security is the practice of protecting systems, networks, and programs from digital attacks. This quiz tests your fundamental knowledge.",
         howToPlay: [
-          "Choose your private key (a secret number)",
-          "Calculate your public key using modular arithmetic",
-          "Exchange public keys with your partner",
-          "Calculate the shared secret using your private key and partner's public key",
-          "Verify both parties arrive at the same shared secret"
+          "Read the security scenario or question carefully",
+          "Select the best course of action from the options",
+          "Maintain your System Integrity (health) by answering correctly",
+          "Learn from the detailed explanations for each answer",
+          "Complete all questions to secure the system"
         ],
         objectives: [
-          "Understand the mathematical foundation of key exchange",
-          "Learn about modular arithmetic in cryptography",
-          "Experience how secure communication is established"
+          "Identify common threats like Phishing and Malware",
+          "Understand the importance of Strong Passwords and 2FA",
+          "Learn about Network Security protocols (HTTPS, Firewalls)"
         ],
         tips: [
-          "Choose larger prime numbers for better security",
-          "The private key should never be shared",
-          "Public keys can be intercepted without compromising security"
+          "Phishing emails often create a sense of urgency",
+          "HTTPS ensures your connection is encrypted",
+          "Never reuse passwords across different accounts"
         ]
       }
     },
@@ -53,18 +53,18 @@ const Games = () => {
           "Study the cipher grid that maps letters to symbols",
           "Receive an encrypted message in symbol form",
           "Match each symbol to its corresponding letter",
-          "Decode the complete message",
+          "Decode the complete message before the timer runs out",
           "Progress through increasing difficulty levels"
         ],
         objectives: [
-          "Learn about substitution ciphers",
-          "Develop pattern recognition skills",
-          "Understand historical cryptography methods"
+          "Master the Pig Pen substitution patterns",
+          "Develop pattern recognition and decoding speed",
+          "Understand how geometric shapes can represent information"
         ],
         tips: [
-          "Draw the grids to help memorize the pattern",
-          "Look for common letter patterns (THE, AND, etc.)",
-          "Practice with simple words first"
+          "Grid 1 (A-I) has no dots, Grid 2 (J-R) has dots",
+          "X shapes are for S-Z (S-V no dots, W-Z with dots)",
+          "Look for common letter patterns (THE, AND) to speed up decoding"
         ]
       }
     },
@@ -77,23 +77,23 @@ const Games = () => {
       difficulty: "Beginner",
       duration: "10 min",
       tutorial: {
-        overview: "The Caesar Cipher shifts each letter in the alphabet by a fixed number of positions. It's one of the oldest and simplest encryption techniques.",
+        overview: "The Caesar Cipher shifts each letter in the alphabet by a fixed number of positions. It's a fundamental example of a substitution cipher.",
         howToPlay: [
-          "Select or receive an encrypted message",
-          "Determine the shift value (or try all 25 possibilities)",
-          "Shift each letter back by the key amount",
-          "Check if the result makes sense",
-          "Try frequency analysis for harder puzzles"
+          "Choose to Encrypt or Decrypt a message",
+          "Select a 'Shift' value (the key)",
+          "Observe how each letter moves forward or backward in the alphabet",
+          "Use the 'Brute Force' tool to try all possible shifts instantly",
+          "Analyze the results to find the meaningful message"
         ],
         objectives: [
-          "Understand shift ciphers",
-          "Learn brute force attack methods",
-          "Explore frequency analysis techniques"
+          "Understand the mechanics of Shift Ciphers",
+          "Learn why simple substitution is easy to crack (Brute Force)",
+          "Explore Frequency Analysis concepts"
         ],
         tips: [
-          "Common shifts are 3, 13 (ROT13), and 1",
-          "Look for common words like 'THE' or 'AND'",
-          "Only letters are shifted, not numbers or punctuation"
+          "A shift of 13 (ROT13) is its own inverse!",
+          "In English, 'E' is the most common letter - look for it",
+          "Brute forcing is effective because there are only 25 possible keys"
         ]
       }
     },
@@ -106,23 +106,23 @@ const Games = () => {
       difficulty: "Advanced",
       duration: "25-30 min",
       tutorial: {
-        overview: "RSA is an asymmetric cryptographic algorithm that uses a pair of keys - one public for encryption, one private for decryption. It's the foundation of modern internet security.",
+        overview: "RSA is an asymmetric cryptographic algorithm using a Public Key for encryption and a Private Key for decryption. It secures most of the internet today.",
         howToPlay: [
-          "Generate two large prime numbers",
-          "Calculate the public and private keys",
-          "Encrypt a message using the public key",
-          "Decrypt the message using the private key",
-          "Learn why factoring large numbers is computationally hard"
+          "Step 1: Generate Keys by choosing two prime numbers (p, q)",
+          "Step 2: Calculate 'n' (modulus) and 'φ(n)'",
+          "Step 3: Encrypt a numeric message using the Public Key (e, n)",
+          "Step 4: Decrypt the cipher using the Private Key (d, n)",
+          "Verify that the decrypted message matches the original"
         ],
         objectives: [
-          "Understand asymmetric cryptography",
-          "Learn the RSA algorithm step-by-step",
-          "Grasp the importance of prime factorization in security"
+          "Understand Asymmetric (Public-Key) Cryptography",
+          "Learn the role of Prime Numbers and Modular Arithmetic",
+          "Grasp the concept of Trapdoor Functions"
         ],
         tips: [
-          "Start with small primes to understand the process",
-          "Real RSA uses primes with hundreds of digits",
-          "The security relies on the difficulty of factoring"
+          "The security of RSA relies on the difficulty of factoring large 'n'",
+          "Public keys can be shared openly; Private keys must be secret",
+          "In this lab, we use small numbers, but real RSA uses massive primes"
         ]
       }
     },
@@ -137,21 +137,21 @@ const Games = () => {
       tutorial: {
         overview: "Hash functions convert input data into fixed-size strings. They're used for password storage, data integrity verification, and blockchain technology.",
         howToPlay: [
-          "Input any text or data",
-          "Watch it transform into a hash value",
-          "Change one character and see the hash completely change",
-          "Try to create hash collisions (nearly impossible!)",
-          "Learn about different hash algorithms (MD5, SHA-256, etc.)"
+          "Type any text into the input field",
+          "Observe the generated Hash Output",
+          "Change a single character in your input",
+          "Notice the 'Avalanche Effect' - the hash changes completely!",
+          "Compare different algorithms (Simple, MD5-like, SHA-256-like)"
         ],
         objectives: [
-          "Understand hash function properties",
-          "Learn about collision resistance",
-          "Explore real-world applications of hashing"
+          "Understand properties: Deterministic, Fast, One-Way",
+          "Learn about Collision Resistance and the Avalanche Effect",
+          "See how Hashing is used for Passwords and Data Integrity"
         ],
         tips: [
-          "Even tiny input changes produce completely different hashes",
-          "Hash functions are one-way - can't reverse them",
-          "SHA-256 is used in Bitcoin mining"
+          "You cannot reverse a hash to get the original message",
+          "Hashes are used to verify if a file has been tampered with",
+          "SHA-256 is the industry standard for secure hashing"
         ]
       }
     },
@@ -164,23 +164,23 @@ const Games = () => {
       difficulty: "Intermediate",
       duration: "20 min",
       tutorial: {
-        overview: "Steganography hides messages within other non-secret data. Unlike encryption which scrambles data, steganography conceals its very existence.",
+        overview: "Steganography is the practice of concealing a message within another non-secret message or physical object. It hides the *existence* of the secret.",
         howToPlay: [
-          "Choose a cover medium (image, text, or audio)",
-          "Embed your secret message within it",
-          "The output looks identical to human eyes",
-          "Extract hidden messages from suspicious files",
-          "Learn LSB (Least Significant Bit) technique"
+          "Select 'Encode' to hide a message",
+          "Enter your Secret Message and a Cover Text",
+          "Choose a technique (Whitespace or First Letter)",
+          "Generate the 'Stego Text' which looks normal but holds the secret",
+          "Use 'Decode' to extract secrets from suspicious text"
         ],
         objectives: [
-          "Understand the difference between crypto and stego",
-          "Learn image-based steganography techniques",
-          "Discover how governments and spies use steganography"
+          "Distinguish between Steganography (hiding existence) and Cryptography (scrambling)",
+          "Learn techniques like Least Significant Bit (LSB) and Text Hiding",
+          "Understand how digital watermarking works"
         ],
         tips: [
-          "Use high-quality images for better hiding capacity",
-          "The file size might slightly increase",
-          "Combine with encryption for maximum security"
+          "Combine Steganography with Encryption for layered security",
+          "Whitespace hiding uses invisible characters - careful with copy/paste!",
+          "First Letter method requires a coherent cover sentence"
         ]
       }
     }
