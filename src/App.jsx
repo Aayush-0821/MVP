@@ -14,6 +14,7 @@ import Quiz2 from "./pages/Quiz2";
 import CaesarCipher from "./pages/CaesarCipher";
 import RSAGame from "./pages/RSAGame";
 import HashGame from "./pages/HashGame";
+import Contact from "./pages/Contact";
 import SteganographyGame from "./pages/SteganographyGame";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/rsa-game" element={<RSAGame />} />
           <Route path="/hash-game" element={<HashGame />} />
           <Route path="/steganography" element={<SteganographyGame />} />
+          <Route path="/contact" element={<Contact />}/>
         </Route>
       </Routes>
     </BrowserRouter>

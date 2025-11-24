@@ -1,8 +1,19 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthProvider";
 import { supabase } from "../lib/supabaseClient";
+
+const InputField = ({ type = "text", value, onChange, placeholder }) => (
+  <input
+    type={type}
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4A70A9] transition"
+  />
+);
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,50 +23,33 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
 
-  const title = useMemo(() => (mode === "login" ? "Login" : "Create Account"), [mode]);
+  const title = useMemo(() => (mode === "login" ? "Welcome Back" : "Create Your Account"), [mode]);
   const cta = useMemo(() => (mode === "login" ? "Login" : "Sign Up"), [mode]);
-  const switchText = useMemo(
-    () => (mode === "login" ? "New here?" : "Already have an account?"),
-    [mode]
-  );
-  const switchCta = useMemo(() => (mode === "login" ? "Create one" : "Login"), [mode]);
+  const switchText = useMemo(() => (mode === "login" ? "New here?" : "Already registered?"), [mode]);
+  const switchCta = useMemo(() => (mode === "login" ? "Sign Up" : "Login"), [mode]);
 
-  const onSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setInfo("");
 
-    if (!email || !password) {
-      setError("Please fill in email and password.");
-      return;
-    }
-    if (mode === "signup" && password !== confirm) {
-      setError("Passwords do not match.");
-      return;
-    }
-    if (mode === "signup" && !username) {
-      setError("Username is required.");
-      return;
-    }
+    if (!email || !password) return setError("Please fill in email and password.");
+    if (mode === "signup" && password !== confirm) return setError("Passwords do not match.");
+    if (mode === "signup" && !username) return setError("Username is required.");
 
     try {
       setLoading(true);
 
       if (mode === "login") {
-        const { error: signInError } = await signInWithPassword({
-          email,
-          password,
-        });
+        const { error: signInError } = await signInWithPassword({ email, password });
         if (signInError) throw signInError;
         navigate("/");
       } else {
@@ -68,7 +62,6 @@ const Login = () => {
         if (signUpError) throw signUpError;
 
         const userId = data?.user?.id;
-
         if (userId) {
           await supabase.from("profiles").upsert(
             {
@@ -85,9 +78,9 @@ const Login = () => {
         }
 
         if (data?.user?.identities?.length === 0) {
-          setError("An account with this email already exists. Try logging in.");
+          setError("An account with this email already exists.");
         } else {
-          setInfo("Check your email to confirm your account. Then login.");
+          setInfo("Verification email sent. Check inbox.");
           setMode("login");
         }
       }
@@ -98,7 +91,7 @@ const Login = () => {
     }
   };
 
-  const onGoogle = async () => {
+  const handleGoogleLogin = async () => {
     try {
       setLoading(true);
       await signInWithProvider("google");
@@ -110,141 +103,91 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-red-50 dark:bg-gray-900 dark:text-white flex items-center justify-center min-h-screen px-4">
-      <div className="bg-white dark:bg-gray-800 dark:text-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-100 dark:from-black dark:via-gray-900 dark:to-gray-800 transition-all">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl p-8 rounded-3xl shadow-2xl w-full max-w-md border border-[#8FABD4]/30 dark:border-[#8FABD4]/20"
+      >
         <div className="flex justify-center mb-6">
           <img src={logo} alt="Logo" className="w-16 h-16" />
         </div>
 
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <button
-            className={`px-4 py-2 rounded-full text-sm font-semibold ${
-              mode === "login"
-                ? "bg-red-600 text-white"
-                : "bg-red-100 text-red-700"
-            }`}
-            onClick={() => setMode("login")}
-          >
-            Login
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full text-sm font-semibold ${
-              mode === "signup"
-                ? "bg-red-600 text-white"
-                : "bg-red-100 text-red-700"
-            }`}
-            onClick={() => setMode("signup")}
-          >
-            Sign Up
-          </button>
+        <div className="flex items-center justify-center gap-3 mb-6">
+          {["login", "signup"].map((type) => (
+            <button
+              key={type}
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                mode === type
+                  ? "bg-gradient-to-r from-[#4A70A9] to-[#8FABD4] text-white"
+                  : "bg-white text-gray-700 dark:bg-gray-900 dark:text-gray-300"
+              }`}
+              onClick={() => setMode(type)}
+            >
+              {type === "login" ? "Login" : "Sign Up"}
+            </button>
+          ))}
         </div>
 
-        <h2 className="text-2xl font-bold text-center text-red-900 mb-4">{title}</h2>
+        <h2 className="text-3xl font-bold text-center mb-4 text-[#4A70A9] dark:text-[#8FABD4]">
+          {title}
+        </h2>
 
         <button
-          onClick={onGoogle}
+          onClick={handleGoogleLogin}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-2 border border-red-200 rounded-full py-3 hover:bg-red-100 transition mb-4 disabled:opacity-60"
+          className="w-full flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 rounded-full py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition mb-4 disabled:opacity-50"
         >
           <img
             src="https://www.svgrepo.com/show/355037/google.svg"
             alt="Google"
             className="w-5 h-5"
           />
-          <span className="text-red-800 font-medium">
-            {mode === "login" ? "Login" : "Sign Up"} with Google
-          </span>
+          <span className="font-medium">{cta} with Google</span>
         </button>
 
         <div className="flex items-center my-4">
-          <hr className="flex-1 border-red-200" />
-          <span className="px-2 text-red-500 text-sm">or with email</span>
-          <hr className="flex-1 border-red-200" />
+          <hr className="flex-1 border-gray-300 dark:border-gray-700" />
+          <span className="px-2 text-gray-500 text-sm">or with email</span>
+          <hr className="flex-1 border-gray-300 dark:border-gray-700" />
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-3">
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-3 border border-red-300 rounded-lg"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-3 border border-red-300 rounded-lg"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <InputField type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <InputField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
           {mode === "signup" && (
             <>
-              <input
-                type="password"
-                placeholder="Confirm password"
-                className="w-full p-3 border border-red-300 rounded-lg"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-              />
-
-              <input
-                type="text"
-                placeholder="Full name"
-                className="w-full p-3 border border-red-300 rounded-lg"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-
-              <input
-                type="text"
-                placeholder="Username"
-                className="w-full p-3 border border-red-300 rounded-lg"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-
-              <input
-                type="text"
-                placeholder="Display name (optional)"
-                className="w-full p-3 border border-red-300 rounded-lg"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-              />
-
-              <input
-                type="text"
-                placeholder="Avatar URL (optional)"
-                className="w-full p-3 border border-red-300 rounded-lg"
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
-              />
+              <InputField type="password" placeholder="Confirm Password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+              <InputField placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+              <InputField placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <InputField placeholder="Display Name (optional)" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+              <InputField placeholder="Avatar URL (optional)" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} />
             </>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-red-600 text-white py-3 rounded-full font-medium"
+            className="w-full py-3 rounded-full font-semibold text-white bg-gradient-to-r from-[#4A70A9] to-[#8FABD4] hover:scale-105 transition-all"
           >
             {loading ? "Please wait..." : cta}
           </button>
         </form>
 
-        {error && <p className="text-center text-red-600 mt-3">{error}</p>}
+        {error && <p className="text-center text-red-500 mt-3">{error}</p>}
         {info && <p className="text-center text-green-600 mt-3">{info}</p>}
 
-        <p className="text-center text-sm text-red-700 mt-6">
+        <p className="text-center text-sm mt-6 text-gray-600 dark:text-gray-300">
           {switchText}
           <button
-            className="ml-1 text-red-600 hover:underline"
+            className="ml-1 text-[#4A70A9] dark:text-[#8FABD4] hover:underline"
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
           >
             {switchCta}
           </button>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };
